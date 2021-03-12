@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Mike\\source\\repos\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {}
+    "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Mike\\source\\repos\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {
+    "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {
       "version": "1.0.1",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Mike\\source\\repos\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
+        "projectUniqueName": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
         "projectName": "PaychexDataConsolidationTool",
-        "projectPath": "C:\\Users\\Mike\\source\\repos\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
+        "projectPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
         "packagesPath": "C:\\Users\\Mike\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Mike\\source\\repos\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\obj\\",
+        "outputPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\"

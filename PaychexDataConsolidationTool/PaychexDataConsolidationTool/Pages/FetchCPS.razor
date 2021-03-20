@@ -23,9 +23,6 @@
     }
 </style>
 
-<div>
-    <a class="btn btn-primary" href='/addCPS'>Add</a>
-</div>
 <br />
 
 @if (cpsModel == null)
@@ -35,14 +32,14 @@
 else
 {
     <div class="row col-md-3 pull-right">
-        <input type="text" id="txtSearch" placeholder="Search Titles..." class="form-control" @bind="SearchTerm" @bind:event="oninput" />
+        <input type="text" id="txtSearch" placeholder="Search Date..." class="form-control" @bind="SearchTerm" @bind:event="oninput" />
     </div>
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th class="sort-th" @onclick="@(() => SortTable("ID"))">
-                    ID
-                    <span class="fa @(SetSortIcon("ID"))"></span>
+                <th class="sort-th" @onclick="@(() => SortTable("Date"))">
+                    Date
+                    <span class="fa @(SetSortIcon("Date"))"></span>
                 </th>
                 <th class="sort-th" @onclick="@(() => SortTable("Status"))">
                     Status
@@ -52,8 +49,6 @@ else
                     Total
                     <span class="fa @(SetSortIcon("Total"))"></span>
                 </th>
-
-                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -70,14 +65,9 @@ else
                 foreach (var cps in cpsModel)
                 {
                     <tr>
-                        <td>@cps.ID</td>
+                        <td>@cps.Date</td>
                         <td>@cps.Status</td>
                         <td>@cps.Total</td>
-
-                        <td>
-                            <a class="btn btn-primary" href='/editCPS/@cps.ID'>Edit</a>  |
-                            <a class="btn btn-danger" @onclick="() => DeleteCPS(cps.ID)">Delete</a>
-                        </td>
                     </tr>
                 }
             }
@@ -137,13 +127,6 @@ else
         totalRecords = await cpsManager.Count(searchTerm);
         totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
         SetPagerSize("forward");
-    }
-
-
-    protected async Task DeleteCPS(int id)
-    {
-        await cpsManager.Delete(id);
-        cpsModel = await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, sortDir, searchTerm);
     }
 
     private bool isSortedAscending;

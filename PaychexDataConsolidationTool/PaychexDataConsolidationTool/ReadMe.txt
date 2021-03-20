@@ -25,6 +25,22 @@ INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-20', N'Demo', 3
 GO
 INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-20', N'Master', 4)
 GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-27', N'Inactive', 1)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-27', N'Active', 2)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-27', N'Demo', 3)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-27', N'Master', 4)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-04-03', N'Inactive', 1)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-04-03', N'Active', 2)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-04-03', N'Demo', 3)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-04-03', N'Master', 4)
+GO
 
 CREATE PROCEDURE [dbo].[SP_Add_CPS]    
 	@Date NVARCHAR(12),

@@ -31,8 +31,6 @@ namespace PaychexDataConsolidationTool
             services.AddDbContext<DataAccess.AppContext>(options =>
                           options.UseSqlServer(
                               Configuration.GetConnectionString("DefaultConnection")));
-            //Article service  
-            services.AddScoped<IArticleManager, ArticleManager>();
             //CPS service
             services.AddScoped<ICPSManager, CPSManager>();
             //Register dapper in scope  

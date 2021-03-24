@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("2a0a1cac-b6e7-4c85-9582-666d8bc7d09f")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("PaychexDataConsolidationTool")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.1.0")]

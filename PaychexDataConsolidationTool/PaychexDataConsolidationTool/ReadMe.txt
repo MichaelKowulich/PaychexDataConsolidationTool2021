@@ -1,56 +1,70 @@
+﻿================================================================================================
+EXECUTE BELOW SCRIPT IN	SQL SERVER TO ADD CPS TABLE
 ================================================================================================
-EXECUTE BELOW SCRIPT IN	SQL SERVER AND CHANGE CONNECTION-STRING INSIDE "appsettings.json" FILE.
-================================================================================================
-
-CREATE DATABASE [PaychexDataConsolidationTool]
 
 GO
 USE [PaychexDataConsolidationTool]
 GO
 
-CREATE TABLE [dbo].[Article](
+CREATE TABLE [dbo].[CPS](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[Title] [nvarchar](250) NOT NULL,
- CONSTRAINT [PK_Article] PRIMARY KEY CLUSTERED 
+	[Date] [nvarchar](12) NOT NULL,
+	[Status] [nvarchar](250) NOT NULL,
+	[Total] [int] NOT NULL,
+ CONSTRAINT [PK_CPS] PRIMARY KEY CLUSTERED 
 	(
 	[ID] ASC
 	)
 )
 
-INSERT [dbo].[Article] ([Title]) VALUES (N'The Code Hubs')
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-20', N'Inactive', 1)
 GO
-INSERT [dbo].[Article] ([Title]) VALUES (N'Faisal')
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-20', N'Active', 2)
 GO
-INSERT [dbo].[Article] ([Title]) VALUES (N'Sort Table')
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-20', N'Demo', 3)
 GO
-INSERT [dbo].[Article] ([Title]) VALUES (N'Abc')
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-20', N'Master', 4)
 GO
-INSERT [dbo].[Article] ([Title]) VALUES (N'Test Article')
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-27', N'Inactive', 1)
 GO
-INSERT [dbo].[Article] ([Title]) VALUES (N'C# Corner')
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-27', N'Active', 2)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-27', N'Demo', 3)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-03-27', N'Master', 4)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-04-03', N'Inactive', 1)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-04-03', N'Active', 2)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-04-03', N'Demo', 3)
+GO
+INSERT [dbo].[CPS] ([Date], [Status], [Total]) VALUES (N'2021-04-03', N'Master', 4)
 GO
 
-CREATE PROCEDURE [dbo].[SP_Add_Article]    
-    @Title NVARCHAR(250) 
+CREATE PROCEDURE [dbo].[SP_Add_CPS]    
+	@Date NVARCHAR(12),
+    @Status NVARCHAR(250), 
+	@Total INT
 AS    
     BEGIN    
  DECLARE @Id as BIGINT  
-        INSERT  INTO [Article]    
-                (Title
-             )    
-        VALUES  ( @Title       
-             );   
+        INSERT  INTO [CPS] (Date, Status, Total) VALUES (@Date, @Status, @Total );   
 		SET @Id = SCOPE_IDENTITY();   
-        SELECT  @Id AS ArticleID;    
+        SELECT  @Id AS CPSID;    
     END;   
 GO	
 	
-CREATE PROCEDURE [dbo].[SP_Update_Article] 
+CREATE PROCEDURE [dbo].[SP_Update_CPS] 
 		@Id INT,   
-		@Title NVARCHAR(250)   
+		@Date NVARCHAR(12),
+		@Status NVARCHAR(250),
+		@Total INT
 	AS    
 		BEGIN    
 
-		UPDATE [Article] SET Title = @Title WHERE ID = @Id 
-	           
+		UPDATE [CPS] SET Date = @Date WHERE ID = @Id 
+		UPDATE [CPS] SET Status = @Status WHERE ID = @Id 
+	    UPDATE [CPS] SET Total = @Total WHERE ID = @Id 
+      
 		END;    

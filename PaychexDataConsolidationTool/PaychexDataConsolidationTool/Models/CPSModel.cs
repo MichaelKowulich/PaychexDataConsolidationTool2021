@@ -9,6 +9,8 @@ namespace PaychexDataConsolidationTool.Models
     {
         public int ID { get; set; }
 
+        public string Date { get; set; }
+
         public string Status { get; set; }
 
         public int Total { get; set; }

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using PaychexDataConsolidationTool.Contracts;
 using PaychexDataConsolidationTool.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
@@ -55,7 +56,20 @@ namespace PaychexDataConsolidationTool.Concrete
                 ($"SELECT FORMAT (Date, 'yyyy-MM-dd') as Date, Status, Total FROM [CPS] WHERE Date like '%{search}%' ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ", null, commandType: CommandType.Text));
             return cpss;
         }
-
+        public Task<List<CPS>> SearchDates(int skip, int take, string orderBy, string startDate, string endDate, string direction = "DESC")
+        {
+            var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
+                ($"SELECT FORMAT (Date, 'yyyy-MM-dd') as Date, Status, Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ", null, commandType: CommandType.Text));
+            Console.WriteLine($"SELECT FORMAT (Date, 'yyyy-MM-dd') as Date, Status, Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;");
+            return cpss;
+        }
+        public Task<int> CountAfterSearch(string startDate, string endDate)
+        {
+            var totCPS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) from [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}'", null,
+                    commandType: CommandType.Text));
+            Console.WriteLine($"select COUNT(*) from [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}'");
+            return totCPS;
+        }
         public Task<int> Update(CPS cps)
         {
             var dbPara = new DynamicParameters();

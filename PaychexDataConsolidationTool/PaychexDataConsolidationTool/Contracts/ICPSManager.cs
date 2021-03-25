@@ -12,5 +12,7 @@ namespace PaychexDataConsolidationTool.Contracts
         Task<int> Update(CPS cps);
         Task<CPS> GetById(int Id);
         Task<List<CPS>> ListAll(int skip, int take, string orderBy, string direction, string search);
+        Task<List<CPS>> SearchDates(int skip, int take, string orderBy, string direction, string startDate, string endDate);    
+        public Task<int> CountAfterSearch(string startDate, string endDate);
     }
 }

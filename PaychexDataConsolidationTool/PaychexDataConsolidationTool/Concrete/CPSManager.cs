@@ -52,7 +52,7 @@ namespace PaychexDataConsolidationTool.Concrete
         public Task<List<CPS>> ListAll(int skip, int take, string orderBy, string direction = "DESC", string search = "")
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT * FROM [CPS] WHERE Date like '%{search}%' ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ", null, commandType: CommandType.Text));
+                ($"SELECT FORMAT (Date, 'yyyy-MM-dd') as Date, Status, Total FROM [CPS] WHERE Date like '%{search}%' ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ", null, commandType: CommandType.Text));
             return cpss;
         }
 

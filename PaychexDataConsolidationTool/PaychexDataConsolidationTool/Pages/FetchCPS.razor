@@ -1,6 +1,7 @@
 ﻿@page "/cpslist"
 @inject ICPSManager cpsManager
-
+@inject IJSRuntime JSRuntime
+@namespace PaychexDataConsolidationTool
 <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <style>
@@ -31,18 +32,25 @@
 }
 else
 { <div class="form-group row">
-    <div class="col-xs-2">
-        <label for="StartDate"> Start Date: </label>
-        <input type="text" id="StartDate" class="form-control" placeholder="Start Date" @bind="StartDate" @bind:event="oninput">
+        <div class="col-xs-2">
+            <label for="StartDate"> Start Date: </label>
+            <input type="text" id="StartDate" class="form-control" placeholder="Start Date" @bind="StartDate" @bind:event="oninput">
+        </div>
+        <div class="col-xs-2">
+            <label for="EndDate"> End Date: </label>
+            <input type="text" id="EndDate" class="form-control" placeholder="End Date" @bind="EndDate" @bind:event="oninput">
+        </div>
+        <div class="d-flex flex-column">
+            <button type="button" class="btn btn-primary btn-block mt-auto p-3"><i class="fa fa-search" @onclick="@(() => FilterRecords())"></i></button>
+        </div>
     </div>
-    <div class="col-xs-2">
-        <label for="EndDate"> End Date: </label>
-        <input type="text" id="EndDate" class="form-control" placeholder="End Date" @bind="EndDate" @bind:event="oninput">
-    </div>
-    <div class="d-flex flex-column">
-        <button type="button" class="btn btn-primary btn-block mt-auto p-3"><i class="fa fa-search" @onclick="@(() => FilterRecords())"></i></button>
-    </div>
-   </div>
+    <button type="button" class="btn btn-primary btn-block mt-auto p-3" @onclick="generateCPSGraph">Click me</button>
+    @code {
+        protected void generateCPSGraph()
+        {
+            JSRuntime.InvokeAsync<bool>("generateCPSGraph");
+        }
+    }
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
@@ -89,190 +97,188 @@ else
         <button class="btn btn-custom" @onclick=@(async ()=>await NavigateToPage("next"))>Next</button>
 
     </div>
+}
+
+
+@code {
+    private string startDate;
+    private string StartDate
+    {
+        get { return startDate; }
+        set { startDate = value; }
+    }
+
+    private string endDate;
+    private string EndDate
+    {
+        get { return endDate; }
+        set { endDate = value; }
     }
 
 
-    @code {
-        private string startDate;
-        private string StartDate
+    List<CPS> cpsModel;
+    CPS cpsEntity = new CPS();
+    #region Pagination
+
+    int totalPages;
+    int totalRecords;
+    int curPage;
+    Boolean hasSearched = false;
+    int pagerSize;
+    int pageSize;
+    int startPage;
+    int endPage;
+    string sortColumnName = "ID";
+    string sortDir = "DESC";
+
+    #endregion
+
+    protected override async Task OnInitializedAsync()
+    {
+        //display total page buttons
+        pagerSize = 3;
+        pageSize = 7;
+        curPage = 1;
+        cpsModel = await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, sortDir, startDate);
+        totalRecords = await cpsManager.Count(startDate);
+        totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
+        SetPagerSize("forward");
+    }
+
+    protected async Task OnSearchAsync()
+    {
+        //display total page buttons
+        pagerSize = 3;
+        pageSize = 7;
+        curPage = 1;
+        cpsModel = await cpsManager.SearchDates((curPage - 1) * pageSize, pageSize, sortColumnName, startDate, endDate, sortDir);
+        totalRecords = await cpsManager.CountAfterSearch(startDate, endDate);
+        totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
+        hasSearched = true;
+        SetPagerSize("forward");
+    }
+
+    private bool isSortedAscending;
+    private string activeSortColumn;
+
+    private async Task<List<CPS>> SortRecords(string columnName, string dir)
+    {
+        return await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, columnName, dir, startDate);
+    }
+
+    private async Task SortTable(string columnName)
+    {
+        if (columnName != activeSortColumn)
         {
-            get { return startDate; }
-            set { startDate = value; }
+            cpsModel = await SortRecords(columnName, "ASC");
+            isSortedAscending = true;
+            activeSortColumn = columnName;
         }
-
-        private string endDate;
-        private string EndDate
+        else
         {
-            get { return endDate; }
-            set { endDate = value; }
-        }
-
-
-        List<CPS> cpsModel;
-        CPS cpsEntity = new CPS();
-
-
-        #region Pagination
-
-        int totalPages;
-        int totalRecords;
-        int curPage;
-        Boolean hasSearched = false;
-        int pagerSize;
-        int pageSize;
-        int startPage;
-        int endPage;
-        string sortColumnName = "ID";
-        string sortDir = "DESC";
-
-        #endregion
-
-        protected override async Task OnInitializedAsync()
-        {
-            //display total page buttons
-            pagerSize = 3;
-            pageSize = 7;
-            curPage = 1;
-            cpsModel = await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, sortDir, startDate);
-            totalRecords = await cpsManager.Count(startDate);
-            totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
-            SetPagerSize("forward");
-        }
-
-        protected async Task OnSearchAsync()
-        {
-            //display total page buttons
-            pagerSize = 3;
-            pageSize = 7;
-            curPage = 1;
-            cpsModel = await cpsManager.SearchDates((curPage - 1) * pageSize, pageSize, sortColumnName, startDate, endDate, sortDir);
-            totalRecords = await cpsManager.CountAfterSearch(startDate, endDate);
-            totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
-            hasSearched = true;
-            SetPagerSize("forward");
-        }
-
-        private bool isSortedAscending;
-        private string activeSortColumn;
-
-        private async Task<List<CPS>> SortRecords(string columnName, string dir)
-        {
-            return await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, columnName, dir, startDate);
-        }
-
-        private async Task SortTable(string columnName)
-        {
-            if (columnName != activeSortColumn)
-            {
-                cpsModel = await SortRecords(columnName, "ASC");
-                isSortedAscending = true;
-                activeSortColumn = columnName;
-            }
-            else
-            {
-                if (isSortedAscending)
-                {
-                    cpsModel = await SortRecords(columnName, "DESC");
-                }
-                else
-                {
-                    cpsModel = await SortRecords(columnName, "ASC");
-                }
-
-                isSortedAscending = !isSortedAscending;
-            }
-            sortColumnName = columnName;
-            sortDir = isSortedAscending ? "ASC" : "DESC";
-        }
-
-        private string SetSortIcon(string columnName)
-        {
-            if (activeSortColumn != columnName)
-            {
-                return string.Empty;
-            }
             if (isSortedAscending)
             {
-                return "fa-sort-up";
+                cpsModel = await SortRecords(columnName, "DESC");
             }
             else
             {
-                return "fa-sort-down";
+                cpsModel = await SortRecords(columnName, "ASC");
             }
-        }
 
-        public async Task refreshRecords(int currentPage)
-        {
-            if (!hasSearched)
-            {
-                cpsModel = await cpsManager.ListAll((currentPage - 1) * pageSize, pageSize, sortColumnName, sortDir, startDate);
-            }
-            else
-            {
-                cpsModel = await cpsManager.SearchDates((currentPage - 1) * pageSize, pageSize, sortColumnName, startDate, endDate, sortDir);
-            }
-            curPage = currentPage;
-            this.StateHasChanged();
+            isSortedAscending = !isSortedAscending;
         }
+        sortColumnName = columnName;
+        sortDir = isSortedAscending ? "ASC" : "DESC";
+    }
 
-        public void SetPagerSize(string direction)
+    private string SetSortIcon(string columnName)
+    {
+        if (activeSortColumn != columnName)
         {
-            if (direction == "forward" && endPage < totalPages)
+            return string.Empty;
+        }
+        if (isSortedAscending)
+        {
+            return "fa-sort-up";
+        }
+        else
+        {
+            return "fa-sort-down";
+        }
+    }
+
+    public async Task refreshRecords(int currentPage)
+    {
+        if (!hasSearched)
+        {
+            cpsModel = await cpsManager.ListAll((currentPage - 1) * pageSize, pageSize, sortColumnName, sortDir, startDate);
+        }
+        else
+        {
+            cpsModel = await cpsManager.SearchDates((currentPage - 1) * pageSize, pageSize, sortColumnName, startDate, endDate, sortDir);
+        }
+        curPage = currentPage;
+        this.StateHasChanged();
+    }
+
+    public void SetPagerSize(string direction)
+    {
+        if (direction == "forward" && endPage < totalPages)
+        {
+            startPage = endPage + 1;
+            if (endPage + pagerSize < totalPages)
             {
-                startPage = endPage + 1;
-                if (endPage + pagerSize < totalPages)
-                {
-                    endPage = startPage + pagerSize - 1;
-                }
-                else
-                {
-                    endPage = totalPages;
-                }
-                this.StateHasChanged();
-            }
-            else if (direction == "back" && startPage > 1)
-            {
-                endPage = startPage - 1;
-                startPage = startPage - pagerSize;
+                endPage = startPage + pagerSize - 1;
             }
             else
             {
-                startPage = 1;
                 endPage = totalPages;
             }
+            this.StateHasChanged();
         }
-
-        public async Task NavigateToPage(string direction)
+        else if (direction == "back" && startPage > 1)
         {
-            if (direction == "next")
-            {
-                if (curPage < totalPages)
-                {
-                    if (curPage == endPage)
-                    {
-                        SetPagerSize("forward");
-                    }
-                    curPage += 1;
-                }
-            }
-            else if (direction == "previous")
-            {
-                if (curPage > 1)
-                {
-                    if (curPage == startPage)
-                    {
-                        SetPagerSize("back");
-                    }
-                    curPage -= 1;
-                }
-            }
-            await refreshRecords(curPage);
+            endPage = startPage - 1;
+            startPage = startPage - pagerSize;
         }
-
-        public void FilterRecords()
+        else
         {
-            endPage = 0;
-            this.OnSearchAsync().Wait();
+            startPage = 1;
+            endPage = totalPages;
         }
-
     }
+
+    public async Task NavigateToPage(string direction)
+    {
+        if (direction == "next")
+        {
+            if (curPage < totalPages)
+            {
+                if (curPage == endPage)
+                {
+                    SetPagerSize("forward");
+                }
+                curPage += 1;
+            }
+        }
+        else if (direction == "previous")
+        {
+            if (curPage > 1)
+            {
+                if (curPage == startPage)
+                {
+                    SetPagerSize("back");
+                }
+                curPage -= 1;
+            }
+        }
+        await refreshRecords(curPage);
+    }
+
+    public void FilterRecords()
+    {
+        endPage = 0;
+        this.OnSearchAsync().Wait();
+    }
+
+}

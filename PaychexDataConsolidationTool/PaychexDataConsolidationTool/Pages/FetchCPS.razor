@@ -30,10 +30,19 @@
     <p><em>Loading...</em></p>
 }
 else
-{
-    <div class="row col-md-3 pull-right">
-        <input type="text" id="txtSearch" placeholder="Search Date..." class="form-control" @bind="SearchTerm" @bind:event="oninput" />
+{ <div class="form-group row">
+    <div class="col-xs-2">
+        <label for="StartDate"> Start Date: </label>
+        <input type="text" id="StartDate" class="form-control" placeholder="Start Date" @bind="StartDate">
     </div>
+    <div class="col-xs-2">
+        <label for="EndDate"> End Date: </label>
+        <input type="text" id="EndDate" class="form-control" placeholder="End Date" @bind="EndDate">
+    </div>
+    <div class="d-flex flex-column">
+        <button type="button" class="btn btn-primary btn-block mt-auto p-3"><i class="fa fa-search"></i></button>
+    </div>
+   </div>
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
@@ -88,16 +97,24 @@ else
         <button class="btn btn-custom" @onclick=@(async ()=>await NavigateToPage("next"))>Next</button>
 
     </div>
-}
-
-
-@code {
-    private string searchTerm;
-    private string SearchTerm
-    {
-        get { return searchTerm; }
-        set { searchTerm = value; FilterRecords(); }
     }
+
+
+    @code {
+private string startDate;
+    private string StartDate
+    {
+        get { return startDate; }
+        set { startDate = value; FilterRecords(); }
+    }
+
+    private string endDate;
+    private string EndDate
+    {
+        get { return endDate; }
+        set { endDate = value; FilterRecords(); }
+    }
+
 
     List<CPS> cpsModel;
     CPS cpsEntity = new CPS();
@@ -123,8 +140,8 @@ else
         pagerSize = 3;
         pageSize = 5;
         curPage = 1;
-        cpsModel = await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, sortDir, searchTerm);
-        totalRecords = await cpsManager.Count(searchTerm);
+        cpsModel = await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, sortDir, startDate);
+        totalRecords = await cpsManager.Count(startDate);
         totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
         SetPagerSize("forward");
     }
@@ -134,7 +151,7 @@ else
 
     private async Task<List<CPS>> SortRecords(string columnName, string dir)
     {
-        return await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, columnName, dir, searchTerm);
+        return await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, columnName, dir, startDate);
     }
 
     private async Task SortTable(string columnName)
@@ -180,7 +197,7 @@ else
 
     public async Task refreshRecords(int currentPage)
     {
-        cpsModel = await cpsManager.ListAll((currentPage - 1) * pageSize, pageSize, sortColumnName, sortDir, searchTerm);
+        cpsModel = await cpsManager.ListAll((currentPage - 1) * pageSize, pageSize, sortColumnName, sortDir, startDate);
         curPage = currentPage;
         this.StateHasChanged();
     }
@@ -245,4 +262,4 @@ else
         this.OnInitializedAsync().Wait();
     }
 
-}
+    }

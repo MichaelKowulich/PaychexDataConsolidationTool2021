@@ -20,9 +20,9 @@ namespace PaychexDataConsolidationTool.Concrete
         public Task<int> Create(CPS cps)
         {
             var dbPara = new DynamicParameters();
-            dbPara.Add("Date", cps.Date, DbType.String);
-            dbPara.Add("Status", cps.Status, DbType.String);
-            dbPara.Add("Total", cps.Total, DbType.Int64);
+            dbPara.Add("DateOfReport", cps.DateOfReport, DbType.String);
+            dbPara.Add("StatusId", cps.StatusId, DbType.String);
+            dbPara.Add("StatusCountAsOfDate", cps.StatusCountAsOfDate, DbType.Int64);
             var cpsId = Task.FromResult(_dapperManager.Insert<int>("[dbo].[SP_Add_CPS]",
                             dbPara,
                             commandType: CommandType.StoredProcedure));
@@ -31,36 +31,25 @@ namespace PaychexDataConsolidationTool.Concrete
 
         public Task<CPS> GetById(int id)
         {
-            var cps = Task.FromResult(_dapperManager.Get<CPS>($"select * from [CPS] where ID = {id}", null,
+            var cps = Task.FromResult(_dapperManager.Get<CPS>($"select * from [ClientStatus] where ClientStatusId = {id}", null,
                     commandType: CommandType.Text));
             return cps;
         }
 
         public Task<int> Delete(int id)
         {
-            var deleteCPS = Task.FromResult(_dapperManager.Execute($"Delete [CPS] where ID = {id}", null,
+            var deleteCPS = Task.FromResult(_dapperManager.Execute($"Delete [ClientStatus] where ClientStatusId = {id}", null,
                     commandType: CommandType.Text));
             return deleteCPS;
-        }
-
-        public Task<int> Count(string search)
-        {
-            var totCPS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) from [CPS] WHERE Status like '%{search}%'", null,
-                    commandType: CommandType.Text));
-            return totCPS;
-        }
-
-        public Task<List<CPS>> ListAll(string orderBy, string direction = "DESC", string search = "")
-        {
-            var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT FORMAT (Date, 'yyyy-MM-dd') as Date, Status, Total FROM [CPS] WHERE Date like '%{search}%' ORDER BY {orderBy} {direction};", null, commandType: CommandType.Text));
-            return cpss;
         }
         public Task<List<CPS>> SearchDates(string orderBy, string startDate, string endDate, string direction = "DESC")
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT FORMAT (Date, 'yyyy-MM-dd') as Date, Status, Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' ORDER BY {orderBy} {direction}; ", null, commandType: CommandType.Text));
-           // Console.WriteLine($"SELECT FORMAT (Date, 'yyyy-MM-dd') as Date, Status, Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;");
+                ($"Select [dbo].[ClientsPerStatus].DateOfReport, [dbo].[Status].StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate " +
+                $"from[dbo].[ClientsPerStatus], [dbo].[Status] " +
+                $"WHERE[dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' AND[dbo].[ClientsPerStatus].DateOfReport <= '{endDate}' " +
+                $"ORDER BY[dbo].[ClientsPerStatus].DateOfReport, [dbo].[Status].StatusId ", null, commandType: CommandType.Text));
             return cpss;
         }
         public Task<int> CountAfterSearch(string startDate, string endDate)
@@ -74,71 +63,45 @@ namespace PaychexDataConsolidationTool.Concrete
         public Task<List<CPS>> getDates(string startDate, string endDate)
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT DISTINCT FORMAT (Date, 'yyyy-MM-dd') as Date FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' ORDER BY Date ASC", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT DISTINCT FORMAT (Date, 'yyyy-MM-dd') as Date FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' ORDER BY Date ASC");
+                ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerStatus] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC", null, commandType: CommandType.Text));
+            Console.WriteLine($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerStatus] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC");
             return cpss;
         }
 
-        public Task<List<CPS>> getInactives(string startDate, string endDate)
+        public Task<List<Status>> getStatuses()
         {
-            var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Inactive' ORDER BY Date ASC;", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Inactive' ORDER BY Date ASC");
-            return cpss;
-        }
-        public Task<List<CPS>> getActives(string startDate, string endDate)
-        {
-            var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Active' ORDER BY Date ASC;", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Active' ORDER BY Date ASC");
+            var cpss = Task.FromResult(_dapperManager.GetAll<Status>
+                ($"SELECT StatusName FROM [dbo].[Status] ORDER BY StatusId ASC", null, commandType: CommandType.Text));
+            Console.WriteLine($"SELECT StatusName FROM [dbo].[Status] ORDER BY StatusId ASC");
             return cpss;
         }
 
-        public Task<List<CPS>> getDemos(string startDate, string endDate)
+        public Task<List<CPSStatus>> getStatusReportData(string startDate, string endDate, string statusName)
         {
-            var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Demo' ORDER BY Date ASC;", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Demo' ORDER BY Date ASC");
-            return cpss;
-        }
-
-        public Task<List<CPS>> getMasters(string startDate, string endDate)
-        {
-            var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Master' ORDER BY Date ASC;", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Master' ORDER BY Date ASC");
-            return cpss;
-        }
-
-        public Task<List<CPS>> getSuspendeds(string startDate, string endDate)
-        {
-            var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Suspended' ORDER BY Date ASC;", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Suspended' ORDER BY Date ASC");
-            return cpss;
-        }
-
-        public Task<List<CPS>> getDeleteds(string startDate, string endDate)
-        {
-            var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Deleted' ORDER BY Date ASC;", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Deleted' ORDER BY Date ASC");
-            return cpss;
-        }
-        public Task<List<CPS>> getImplementations(string startDate, string endDate)
-        {
-            var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Implementation' ORDER BY Date ASC;", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT Total FROM [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}' AND Status='Implementation' ORDER BY Date ASC");
+            var cpss = Task.FromResult(_dapperManager.GetAll<CPSStatus>
+                ($"Select FORMAT ([dbo].[ClientsPerStatus].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Status].StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate " +
+                $"from[dbo].[ClientsPerStatus], [dbo].[Status] " +
+                $"WHERE[dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport <= '{endDate}' " +
+                $"AND [dbo].[Status].StatusName = '{statusName}' " +
+                $"ORDER BY[dbo].[ClientsPerStatus].DateOfReport", null, commandType: CommandType.Text));
+            Console.WriteLine($"Select [dbo].[ClientsPerStatus].DateOfReport, [dbo].[Status].StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate " +
+                $"from[dbo].[ClientsPerStatus], [dbo].[Status] " +
+                $"WHERE[dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport <= '{endDate}' " +
+                $"AND [dbo].[Status].StatusName = '{statusName}' " +
+                $"ORDER BY[dbo].[ClientsPerStatus].DateOfReport");
             return cpss;
         }
         public Task<int> Update(CPS cps)
         {
             var dbPara = new DynamicParameters();
-            dbPara.Add("Id", cps.ID);
-            dbPara.Add("Date", cps.Date);
-            dbPara.Add("Status", cps.Status, DbType.String);
-            dbPara.Add("Total", cps.Total, DbType.Int64);
+            dbPara.Add("ClientStatusId", cps.ClientStatusId);
+            dbPara.Add("DateOfReport", cps.DateOfReport);
+            dbPara.Add("StatusId", cps.StatusId, DbType.String);
+            dbPara.Add("StatusCountAsOfDate", cps.StatusCountAsOfDate, DbType.Int64);
 
             var updateCPS = Task.FromResult(_dapperManager.Update<int>("[dbo].[SP_Update_CPS]",
                             dbPara,

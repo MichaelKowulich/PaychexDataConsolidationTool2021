@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 
-namespace PaychexDataConsolidationTool.Entities
+namespace PaychexDataConsolidationTool.Models
 {
-    public class CPS
+    public class CPSStatusModel
     {
-        [Key]
         public int ClientStatusId { get; set; }
 
         public string DateOfReport { get; set; }
 
-        public string StatusId { get; set; }
+        public int StatusId { get; set; }
 
         public int StatusCountAsOfDate { get; set; }
+
+        public int StatusName { get; set; }
     }
 }

@@ -44,6 +44,20 @@
 
 
 @code {
+
+    public class GraphData
+    {
+        public int[,] StatusCounts { get; set; }
+        public string[] Dates { get; set; }
+        public string[] Statuses { get; set; }
+        public GraphData(string[] theDates, string[] theStatuses, int i, int j)
+        {
+            this.Statuses = theStatuses;
+            this.StatusCounts = new int[i,j];
+            this.Dates = theDates;
+        }
+    }
+
     private string startDate;
     private string StartDate
     {
@@ -58,97 +72,53 @@
         set { endDate = value; }
     }
 
-
-    List<CPS> cpsModel;
-
     string[] dates = new string[0];
-    int[] inactives = new int[0];
-    int[] actives = new int[0];
-    int[] demos = new int[0];
-    int[] masters = new int[0];
-    int[] suspendeds = new int[0];
-    int[] deleteds = new int[0];
-    int[] implementations = new int[0];
+    string[] statuses = new string[0];
+    string json;
+
     protected async Task generateCPSGraph()
     {
         await this.OnSearchAsync();
-        var obj = new
-        {
-            dates = dates,
-            inactives = inactives,
-            actives = actives,
-            demos = demos,
-            masters = masters,
-            suspendeds = suspendeds,
-            deleteds = deleteds,
-            implementations = implementations
-        };
 
-        await JSRuntime.InvokeAsync<bool>("generateCPSGraph", obj);
+        await JSRuntime.InvokeAsync<bool>("generateCPSGraph", json);
     }
 
     protected async Task OnSearchAsync()
     {
         Array.Resize(ref dates, 0);
-        Array.Resize(ref inactives, 0);
-        Array.Resize(ref actives, 0);
-        Array.Resize(ref demos, 0);
-        Array.Resize(ref masters, 0);
-        Array.Resize(ref suspendeds, 0);
-        Array.Resize(ref deleteds, 0);
-        Array.Resize(ref implementations, 0);
+        Array.Resize(ref statuses, 0);
         List<CPS> dateRange = await cpsManager.getDates(startDate, endDate);
         foreach (var date in dateRange)
         {
             Array.Resize(ref dates, dates.Length + 1);
-            dates[dates.GetUpperBound(0)] = date.Date;
-        }
-        List<CPS> Inactives = await cpsManager.getInactives(startDate, endDate);
-        foreach (var status in Inactives)
-        {
-            Array.Resize(ref inactives, inactives.Length + 1);
-            inactives[inactives.GetUpperBound(0)] = status.Total;
-        }
-        List<CPS> Actives = await cpsManager.getActives(startDate, endDate);
-        foreach (var status in Actives)
-        {
-            Array.Resize(ref actives, actives.Length + 1);
-            actives[actives.GetUpperBound(0)] = status.Total;
+            dates[dates.GetUpperBound(0)] = date.DateOfReport;
         }
 
-        List<CPS> Demos = await cpsManager.getDemos(startDate, endDate);
-        foreach (var status in Demos)
+        List<Status> Statuses = await cpsManager.getStatuses();
+        foreach (var status in Statuses)
         {
-            Array.Resize(ref demos, demos.Length + 1);
-            demos[demos.GetUpperBound(0)] = status.Total;
+            Array.Resize(ref statuses, statuses.Length + 1);
+            statuses[statuses.GetUpperBound(0)] = status.StatusName.ToString();
         }
 
-        List<CPS> Masters = await cpsManager.getMasters(startDate, endDate);
-        foreach (var status in Masters)
+        GraphData obj = new GraphData(dates, statuses, statuses.Length, dates.Length);
+        for (int i = 0; i < statuses.Length; i++)
         {
-            Array.Resize(ref masters, masters.Length + 1);
-            masters[masters.GetUpperBound(0)] = status.Total;
+            List<CPSStatus> allCountsPerStatusWithinDate = await cpsManager.getStatusReportData(startDate, endDate, statuses[i]);
+            int[] CountsPerStatus = new int[dates.Length];
+            for (int j = 0; j < dates.Length; j++)
+            {
+                if (dates[j] == allCountsPerStatusWithinDate.ElementAt(j).DateOfReport)
+                {
+                    CountsPerStatus[j] = allCountsPerStatusWithinDate.ElementAt(j).StatusCountAsOfDate;
+                }
+                else
+                {
+                    CountsPerStatus[j] = 0;
+                }
+                obj.StatusCounts[i,j] = CountsPerStatus[j];
+            }
         }
-
-        List<CPS> Suspendeds = await cpsManager.getSuspendeds(startDate, endDate);
-        foreach (var status in Suspendeds)
-        {
-            Array.Resize(ref suspendeds, suspendeds.Length + 1);
-            suspendeds[suspendeds.GetUpperBound(0)] = status.Total;
-        }
-
-        List<CPS> Deleteds = await cpsManager.getDeleteds(startDate, endDate);
-        foreach (var status in Deleteds)
-        {
-            Array.Resize(ref deleteds, deleteds.Length + 1);
-            deleteds[deleteds.GetUpperBound(0)] = status.Total;
-        }
-
-        List<CPS> Implementations = await cpsManager.getImplementations(startDate, endDate);
-        foreach (var status in Implementations)
-        {
-            Array.Resize(ref implementations, implementations.Length + 1);
-            implementations[implementations.GetUpperBound(0)] = status.Total;
-        }
+        json = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
     }
 }

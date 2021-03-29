@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PaychexDataConsolidationTool.Entities
 {
-    public class CPS
+    public class CPSStatus
     {
         [Key]
         public int ClientStatusId { get; set; }
@@ -16,5 +16,7 @@ namespace PaychexDataConsolidationTool.Entities
         public string StatusId { get; set; }
 
         public int StatusCountAsOfDate { get; set; }
+
+        public string StatusName { get; set; }
     }
 }

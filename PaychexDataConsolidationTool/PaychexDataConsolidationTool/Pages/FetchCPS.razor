@@ -271,6 +271,7 @@
         totalRecords = await cpsManager.Count(startDate.ToString(), endDate.ToString());
         totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
         SetPagerSize("forward");
+        startPage = 1;
     }
 
     ////////////////////////////////////////////////////////////////////

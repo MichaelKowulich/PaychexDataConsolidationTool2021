@@ -42,6 +42,29 @@ namespace PaychexDataConsolidationTool.Concrete
                     commandType: CommandType.Text));
             return deleteCPS;
         }
+
+        public Task<int> Count(string startDate, string endDate)
+        {
+            var totCPSS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) " +
+                $"from[dbo].[ClientsPerStatus], [dbo].[Status] " +
+                $"WHERE[dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport <= '{endDate}';", null,
+                    commandType: CommandType.Text));
+            return totCPSS;
+        }
+
+        public Task<List<CPSStatus>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string direction = "DESC", string search = "")
+        {
+            var cpss = Task.FromResult(_dapperManager.GetAll<CPSStatus>
+                ($"Select FORMAT ([dbo].[ClientsPerStatus].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Status].StatusName as StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate as StatusCountAsOfDate " +
+                $"from[dbo].[ClientsPerStatus], [dbo].[Status] " +
+                $"WHERE[dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport <= '{endDate}' " +
+                $"ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;", null, commandType: CommandType.Text));
+            return cpss;
+        }
         public Task<List<CPS>> SearchDates(string orderBy, string startDate, string endDate, string direction = "DESC")
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<CPS>

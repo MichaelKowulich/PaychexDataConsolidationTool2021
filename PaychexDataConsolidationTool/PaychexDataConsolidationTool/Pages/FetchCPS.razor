@@ -13,6 +13,14 @@
         float: right;
     }
 
+    .padded-left {
+        margin-left: 20px;
+    }
+
+    .padded-right {
+        margin-right: 20px;
+    }
+
     .btn-custom {
         color: black;
         float: left;
@@ -27,16 +35,16 @@
 <br />
 
  <div class="form-group row">
+     <div class="col-xs-2">
+         <label for="StartDate"> Start Date: </label>
+         <input type="date" id="StartDate"  placeholder="Start Date" @bind="StartDate">
+     </div>
         <div class="col-xs-2">
-            <label for="StartDate"> Start Date: </label>
-            <input type="text" id="StartDate" class="form-control" placeholder="Start Date" @bind="StartDate" @bind:event="oninput">
-        </div>
-        <div class="col-xs-2">
-            <label for="EndDate"> End Date: </label>
-            <input type="text" id="EndDate" class="form-control" placeholder="End Date" @bind="EndDate" @bind:event="oninput">
+            <label for="EndDate" class="padded-left"> End Date: </label>
+            <input type="date" id="EndDate" class="padded-right" placeholder="End Date" @bind="EndDate">
         </div>
         <div class="d-flex flex-column">
-            <button type="button" class="btn btn-primary btn-block mt-auto p-3" @onclick="generateCPSGraph"><i class="fa fa-search" ></i></button>
+            <button type="button" class="btn btn-primary btn-block p-1" @onclick="generateCPSGraph"><i class="fa fa-search" ></i>Search</button>
         </div>
     </div>
 
@@ -67,15 +75,15 @@
     //
     // Values that we have bound to input elements of this razor file
     //
-    private string startDate;
-    private string StartDate
+    private DateTime startDate = DateTime.Now;
+    private DateTime StartDate
     {
         get { return startDate; }
         set { startDate = value; }
     }
 
-    private string endDate;
-    private string EndDate
+    protected DateTime endDate = DateTime.Now;
+    protected DateTime EndDate
     {
         get { return endDate; }
         set { endDate = value; }
@@ -112,7 +120,7 @@
         Array.Resize(ref statuses, 0);
 
         //Getting our range of dates, and properly putting them in the array
-        List<CPS> dateRange = await cpsManager.getDates(startDate, endDate);
+        List<CPS> dateRange = await cpsManager.getDates(startDate.ToString(), endDate.ToString());
         foreach (var date in dateRange)
         {
             Array.Resize(ref dates, dates.Length + 1);
@@ -142,7 +150,7 @@
         //
         for (int i = 0; i < statuses.Length; i++)
         {
-            List<CPSStatus> allCountsPerStatusWithinDate = await cpsManager.getStatusReportData(startDate, endDate, statuses[i]);
+            List<CPSStatus> allCountsPerStatusWithinDate = await cpsManager.getStatusReportData(startDate.ToString(), endDate.ToString(), statuses[i]);
             int[] CountsPerStatus = new int[dates.Length];
             for (int j = 0; j < dates.Length; j++)
             {

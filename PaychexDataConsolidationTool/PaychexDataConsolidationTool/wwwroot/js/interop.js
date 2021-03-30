@@ -89,10 +89,19 @@
     };
 
     // Chart declaration (creating the chart with our data and options objects)
-    var myBarChart = new Chart(ctx, {
-        type: 'line',
-        data: data,
-        options: options
-    });
+    if (window.myLineChart != undefined) {
+        window.myLineChart.destroy();
+        window.myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: options
+        })
+    } else {
+        window.myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: options
+        });
+    }
     return true; 
 }

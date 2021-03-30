@@ -45,6 +45,11 @@
 
 @code {
 
+    /////////////////////////////////////////////////////////////
+    //
+    // Creating a GraphData Object so we can flatten (serialize) it
+    // and send it over to javascript interop.js
+    //
     public class GraphData
     {
         public int[,] StatusCounts { get; set; }
@@ -58,6 +63,10 @@
         }
     }
 
+    ////////////////////////////////////////////////////////////////////
+    //
+    // Values that we have bound to input elements of this razor file
+    //
     private string startDate;
     private string StartDate
     {
@@ -72,10 +81,19 @@
         set { endDate = value; }
     }
 
+    /////////////////////////////////////////////////////////////
+    //
+    // Declaring somethings that will always exist
+    //
     string[] dates = new string[0];
     string[] statuses = new string[0];
     string json;
 
+    /////////////////////////////////////////////////////////////
+    //
+    // Waits for search to return, then sends flattened (serialized)
+    // data over to our interop.js file
+    //
     protected async Task generateCPSGraph()
     {
         await this.OnSearchAsync();
@@ -83,10 +101,17 @@
         await JSRuntime.InvokeAsync<bool>("generateCPSGraph", json);
     }
 
+    /////////////////////////////////////////////////////////////
+    //
+    // Main function that handles search between dates
+    //
     protected async Task OnSearchAsync()
     {
+        //Ensuring that we clean up if user decides to search again
         Array.Resize(ref dates, 0);
         Array.Resize(ref statuses, 0);
+
+        //Getting our range of dates, and properly putting them in the array
         List<CPS> dateRange = await cpsManager.getDates(startDate, endDate);
         foreach (var date in dateRange)
         {
@@ -94,6 +119,7 @@
             dates[dates.GetUpperBound(0)] = date.DateOfReport;
         }
 
+        //Getting our statuses and properly putting them in the array
         List<Status> Statuses = await cpsManager.getStatuses();
         foreach (var status in Statuses)
         {
@@ -101,7 +127,19 @@
             statuses[statuses.GetUpperBound(0)] = status.StatusName.ToString();
         }
 
+        //Create our graphdata object because now we know what amount of data we are working with
         GraphData obj = new GraphData(dates, statuses, statuses.Length, dates.Length);
+
+        /////////////////////////////////////////////////////////////
+        //
+        // For each status, get all the calculated totals between the
+        // given dates, then store them in an array, that we will
+        // place in another array (array of arrays/2d array) so that
+        // each index in the statuses array corresponds to the index
+        // of the 2d array that holds the totals i.e:
+        //
+        //  statuses[0] => CountsPerStatus[0]
+        //
         for (int i = 0; i < statuses.Length; i++)
         {
             List<CPSStatus> allCountsPerStatusWithinDate = await cpsManager.getStatusReportData(startDate, endDate, statuses[i]);
@@ -119,6 +157,7 @@
                 obj.StatusCounts[i,j] = CountsPerStatus[j];
             }
         }
+        //Flattening our graphdata object to send over for JS to handle
         json = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
     }
 }

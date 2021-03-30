@@ -1,8 +1,17 @@
-﻿function generateCPSGraph(graphdata){
-    var canvas = document.getElementById("lineGraph");
-    var ctx = canvas.getContext('2d');
-    Chart.defaults.global.defaultFontColor = 'black';
+﻿function generateCPSGraph(graphdata) {
+    
+    var canvas = document.getElementById("lineGraph"); // Referencing the ID of the <canvas> tag in our razor file
+    var ctx = canvas.getContext('2d'); // This is a 2d graph
+    //Default font options
+    Chart.defaults.global.defaultFontColor = 'black'; 
     Chart.defaults.global.defaultFontSize = 16;
+
+    ////////////////////////////////////////////////////////
+    //
+    //  Ensuring the Y axist scale does not show up in 
+    //  'Scientific format' i.e (2E5), uses human readable
+    //  decimal values instead
+    //
     Chart.scaleService.updateScaleDefaults('logarithmic', {
         ticks: {
             callback: function (tick, index, ticks) {
@@ -10,13 +19,23 @@
             }
         }
     });
-    graphdata = JSON.parse(graphdata);
+    graphdata = JSON.parse(graphdata); // Parsing our serialized json object from our FetchCPS.razor file
 
+    ////////////////////////////////////////////////////////
+    //
+    //  Data object to encapsulate x axis, and y axis data
+    //
     var data = {
         labels: graphdata.Dates,
         datasets: []
     };
-    var i = 0;
+
+    ///////////////////////////////////////////////////////////////
+    //
+    //  Creating an object per status, each with randomized color
+    //  also associates corrensponding data with its status
+    //
+    var i = 0; // to reference index of two dimensional array
     graphdata.Statuses.forEach(status => {
         var randomBetween = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
         var r = randomBetween(0, 255);
@@ -42,14 +61,17 @@
             pointHoverBorderWidth: 2,
             pointRadius: 4,
             pointHitRadius: 10,
-            // notice the gap in the data and the spanGaps: true
             data: graphdata.StatusCounts[i],
             spanGaps: true,
         }
         i++;
         data.datasets.push(obj);
     });
-    // Notice the scaleLabel at the same level as Ticks
+
+    //////////////////////////////////////////////////////
+    //
+    //  Options for customizing our scales
+    //
     var options = {
         scales: {
             yAxes: [{
@@ -66,7 +88,7 @@
         }
     };
 
-    // Chart declaration:
+    // Chart declaration (creating the chart with our data and options objects)
     var myBarChart = new Chart(ctx, {
         type: 'line',
         data: data,

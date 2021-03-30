@@ -13,105 +13,105 @@ namespace PaychexDataConsolidationTool
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 #nullable restore
-#line 1 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 1 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using System.Net.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 2 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using Microsoft.AspNetCore.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 3 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using Microsoft.AspNetCore.Components.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 4 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using Microsoft.AspNetCore.Components.Forms;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 5 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using Microsoft.AspNetCore.Components.Routing;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 6 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 7 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 8 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 8 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using PaychexDataConsolidationTool;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 9 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using PaychexDataConsolidationTool.Shared;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 10 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using PaychexDataConsolidationTool.Concrete;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 11 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 11 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using PaychexDataConsolidationTool.Contracts;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 12 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 12 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using PaychexDataConsolidationTool.Entities;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 13 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 13 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using PaychexDataConsolidationTool.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 14 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 14 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using PaychexDataConsolidationTool.DataAccess;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 15 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+#line 15 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
 using ChartJs.Blazor;
 
 #line default
@@ -126,9 +126,14 @@ using ChartJs.Blazor;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 46 "C:\Users\austi\Source\Repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\Pages\FetchCPS.razor"
+#line 46 "C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\Pages\FetchCPS.razor"
        
 
+    /////////////////////////////////////////////////////////////
+    //
+    // Creating a GraphData Object so we can flatten (serialize) it
+    // and send it over to javascript interop.js
+    //
     public class GraphData
     {
         public int[,] StatusCounts { get; set; }
@@ -142,6 +147,10 @@ using ChartJs.Blazor;
         }
     }
 
+    ////////////////////////////////////////////////////////////////////
+    //
+    // Values that we have bound to input elements of this razor file
+    //
     private string startDate;
     private string StartDate
     {
@@ -156,10 +165,19 @@ using ChartJs.Blazor;
         set { endDate = value; }
     }
 
+    /////////////////////////////////////////////////////////////
+    //
+    // Declaring somethings that will always exist
+    //
     string[] dates = new string[0];
     string[] statuses = new string[0];
     string json;
 
+    /////////////////////////////////////////////////////////////
+    //
+    // Waits for search to return, then sends flattened (serialized)
+    // data over to our interop.js file
+    //
     protected async Task generateCPSGraph()
     {
         await this.OnSearchAsync();
@@ -167,10 +185,17 @@ using ChartJs.Blazor;
         await JSRuntime.InvokeAsync<bool>("generateCPSGraph", json);
     }
 
+    /////////////////////////////////////////////////////////////
+    //
+    // Main function that handles search between dates
+    //
     protected async Task OnSearchAsync()
     {
+        //Ensuring that we clean up if user decides to search again
         Array.Resize(ref dates, 0);
         Array.Resize(ref statuses, 0);
+
+        //Getting our range of dates, and properly putting them in the array
         List<CPS> dateRange = await cpsManager.getDates(startDate, endDate);
         foreach (var date in dateRange)
         {
@@ -178,6 +203,7 @@ using ChartJs.Blazor;
             dates[dates.GetUpperBound(0)] = date.DateOfReport;
         }
 
+        //Getting our statuses and properly putting them in the array
         List<Status> Statuses = await cpsManager.getStatuses();
         foreach (var status in Statuses)
         {
@@ -185,7 +211,19 @@ using ChartJs.Blazor;
             statuses[statuses.GetUpperBound(0)] = status.StatusName.ToString();
         }
 
+        //Create our graphdata object because now we know what amount of data we are working with
         GraphData obj = new GraphData(dates, statuses, statuses.Length, dates.Length);
+
+        /////////////////////////////////////////////////////////////
+        //
+        // For each status, get all the calculated totals between the
+        // given dates, then store them in an array, that we will
+        // place in another array (array of arrays/2d array) so that
+        // each index in the statuses array corresponds to the index
+        // of the 2d array that holds the totals i.e:
+        //
+        //  statuses[0] => CountsPerStatus[0]
+        //
         for (int i = 0; i < statuses.Length; i++)
         {
             List<CPSStatus> allCountsPerStatusWithinDate = await cpsManager.getStatusReportData(startDate, endDate, statuses[i]);
@@ -203,6 +241,7 @@ using ChartJs.Blazor;
                 obj.StatusCounts[i,j] = CountsPerStatus[j];
             }
         }
+        //Flattening our graphdata object to send over for JS to handle
         json = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
     }
 

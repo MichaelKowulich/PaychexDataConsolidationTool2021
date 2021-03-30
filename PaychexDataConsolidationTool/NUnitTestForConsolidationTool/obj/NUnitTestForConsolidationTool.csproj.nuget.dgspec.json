@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\austi\\Source\\Repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\NUnitTestForConsolidationTool\\NUnitTestForConsolidationTool.csproj": {}
+    "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\NUnitTestForConsolidationTool\\NUnitTestForConsolidationTool.csproj": {}
   },
   "projects": {
-    "C:\\Users\\austi\\Source\\Repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\NUnitTestForConsolidationTool\\NUnitTestForConsolidationTool.csproj": {
+    "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\NUnitTestForConsolidationTool\\NUnitTestForConsolidationTool.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\austi\\Source\\Repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\NUnitTestForConsolidationTool\\NUnitTestForConsolidationTool.csproj",
+        "projectUniqueName": "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\NUnitTestForConsolidationTool\\NUnitTestForConsolidationTool.csproj",
         "projectName": "NUnitTestForConsolidationTool",
-        "projectPath": "C:\\Users\\austi\\Source\\Repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\NUnitTestForConsolidationTool\\NUnitTestForConsolidationTool.csproj",
+        "projectPath": "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\NUnitTestForConsolidationTool\\NUnitTestForConsolidationTool.csproj",
         "packagesPath": "C:\\Users\\austi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\austi\\Source\\Repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\NUnitTestForConsolidationTool\\obj\\",
+        "outputPath": "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\NUnitTestForConsolidationTool\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\austi\\AppData\\Roaming\\NuGet\\NuGet.Config",

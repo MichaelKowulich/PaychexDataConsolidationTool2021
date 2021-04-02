@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace PaychexDataConsolidationTool.Models
 {
-    public class StatusModel
+    public class TypeModel
     {
-        public int StatusId { get; set; }
+        public int TypeId { get; set; }
 
-        public string StatusName { get; set; }
+        public string TypeName { get; set; }
     }
 }

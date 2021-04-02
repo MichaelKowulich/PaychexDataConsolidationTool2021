@@ -8415,25 +8415,20 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mike\\.nuget\\packages\\": {},
-    "C:\\Microsoft\\Xamarin\\NuGet\\": {}
+    "C:\\Users\\austi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj",
+      "projectUniqueName": "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj",
       "projectName": "PaychexDataConsolidationToolTests",
-      "projectPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj",
-      "packagesPath": "C:\\Users\\Mike\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\obj\\",
+      "projectPath": "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj",
+      "packagesPath": "C:\\Users\\austi\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Microsoft\\Xamarin\\NuGet\\"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Mike\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        "C:\\Users\\austi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
@@ -8446,8 +8441,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {
-              "projectPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj"
+            "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {
+              "projectPath": "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj"
             }
           }
         }

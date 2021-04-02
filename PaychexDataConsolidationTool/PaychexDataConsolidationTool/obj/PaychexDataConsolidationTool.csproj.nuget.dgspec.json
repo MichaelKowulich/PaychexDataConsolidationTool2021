@@ -1,25 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {}
+    "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {
+    "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {
       "version": "1.0.1",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
+        "projectUniqueName": "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
         "projectName": "PaychexDataConsolidationTool",
-        "projectPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
-        "packagesPath": "C:\\Users\\Mike\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\obj\\",
+        "projectPath": "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
+        "packagesPath": "C:\\Users\\austi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\austi\\source\\repos\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Mike\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\austi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"

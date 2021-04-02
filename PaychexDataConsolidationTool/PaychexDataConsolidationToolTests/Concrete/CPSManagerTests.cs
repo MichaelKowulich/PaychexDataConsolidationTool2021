@@ -17,6 +17,53 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
     {
 
         [Fact]
+        public async void getDates_ValidCall()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                mock.Mock<IDapperManager>()
+                    .Setup(x => x.GetAll<CPS>("SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerStatus] WHERE DateOfReport >= '2021-03-01' AND DateOfReport <= '2021-04-03' ORDER BY DateOfReport ASC", null, CommandType.Text))
+                    .Returns(GetSampleDates());
+
+                var cls = mock.Create<CPSManager>();
+                var expected = GetSampleDates();
+
+                var actual = await cls.getDates("2021-03-01", "2021-04-03");
+
+                Xunit.Assert.True(actual != null);
+                Xunit.Assert.Equal(expected.Count, actual.Count);
+                for (int i = 0; i < expected.Count; i++)
+                {
+                    Xunit.Assert.Equal(expected[i].DateOfReport, actual[i].DateOfReport);
+                }
+            }
+        }
+        private List<CPS> GetSampleDates()
+        {
+            List<CPS> output = new List<CPS>
+            {
+                new CPS
+                {
+                    DateOfReport = "2021-03-13"
+                },
+                new CPS
+                {
+                    DateOfReport = "2021-03-20"
+                },
+                new CPS
+                {
+                    DateOfReport = "2021-03-27"
+                },
+                new CPS
+                {
+                    DateOfReport = "2021-04-03"
+                },
+            };
+
+            return output;
+        }
+
+        [Fact]
         public async void getStatuses_ValidCall()
         {
             using (var mock = AutoMock.GetLoose())

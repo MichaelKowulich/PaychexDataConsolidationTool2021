@@ -110,6 +110,13 @@ using PaychexDataConsolidationTool.DataAccess;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 15 "C:\Users\Mike\Desktop\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+using ChartJs.Blazor;
+
+#line default
+#line hidden
+#nullable disable
     public partial class NavMenu : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
@@ -118,7 +125,7 @@ using PaychexDataConsolidationTool.DataAccess;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 23 "C:\Users\Mike\Desktop\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\Shared\NavMenu.razor"
+#line 26 "C:\Users\Mike\Desktop\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\Shared\NavMenu.razor"
        
     bool collapseNavMenu = true;
 

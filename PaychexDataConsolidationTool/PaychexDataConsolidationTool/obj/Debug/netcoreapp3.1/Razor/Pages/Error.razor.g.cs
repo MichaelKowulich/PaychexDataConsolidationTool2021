@@ -107,6 +107,13 @@ using PaychexDataConsolidationTool.DataAccess;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 15 "C:\Users\Mike\Desktop\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+using ChartJs.Blazor;
+
+#line default
+#line hidden
+#nullable disable
     [Microsoft.AspNetCore.Components.RouteAttribute("/error")]
     public partial class Error : Microsoft.AspNetCore.Components.ComponentBase
     {

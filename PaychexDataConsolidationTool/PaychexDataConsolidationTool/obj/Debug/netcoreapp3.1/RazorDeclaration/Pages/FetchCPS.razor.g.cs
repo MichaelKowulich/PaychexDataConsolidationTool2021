@@ -4,7 +4,7 @@
 #pragma warning disable 0649
 #pragma warning disable 0169
 
-namespace PaychexDataConsolidationTool.Pages
+namespace PaychexDataConsolidationTool
 {
     #line hidden
     using System;
@@ -110,6 +110,13 @@ using PaychexDataConsolidationTool.DataAccess;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 15 "C:\Users\Mike\Desktop\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\_Imports.razor"
+using ChartJs.Blazor;
+
+#line default
+#line hidden
+#nullable disable
     [Microsoft.AspNetCore.Components.RouteAttribute("/cpslist")]
     public partial class FetchCPS : Microsoft.AspNetCore.Components.ComponentBase
     {
@@ -119,16 +126,52 @@ using PaychexDataConsolidationTool.DataAccess;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 94 "C:\Users\Mike\Desktop\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\Pages\FetchCPS.razor"
+#line 112 "C:\Users\Mike\Desktop\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\Pages\FetchCPS.razor"
        
-    private string searchTerm;
-    private string SearchTerm
+
+    /////////////////////////////////////////////////////////////
+    //
+    // Creating a GraphData Object so we can flatten (serialize) it
+    // and send it over to javascript interop.js
+    //
+    public class GraphData
     {
-        get { return searchTerm; }
-        set { searchTerm = value; FilterRecords(); }
+        public int[,] StatusCounts { get; set; }
+        public string[] Dates { get; set; }
+        public string[] Statuses { get; set; }
+        public GraphData(string[] theDates, string[] theStatuses, int i, int j)
+        {
+            this.Statuses = theStatuses;
+            this.StatusCounts = new int[i, j];
+            this.Dates = theDates;
+        }
     }
 
-    List<CPS> cpsModel;
+    ////////////////////////////////////////////////////////////////////
+    //
+    // Values that we have bound to input elements of this razor file
+    //
+    private DateTime startDate = DateTime.Now;
+    private DateTime StartDate
+    {
+        get { return startDate; }
+        set { startDate = value; }
+    }
+
+    protected DateTime endDate = DateTime.Now;
+    protected DateTime EndDate
+    {
+        get { return endDate; }
+        set { endDate = value; }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////
+    //
+    // Values that we will use to configure our table after search
+    //
+
+    List<CPSStatus> cpssModel;
     CPS cpsEntity = new CPS();
 
 
@@ -141,36 +184,128 @@ using PaychexDataConsolidationTool.DataAccess;
     int pageSize;
     int startPage;
     int endPage;
-    string sortColumnName = "ID";
+    string sortColumnName = "ClientsPerStatusId";
     string sortDir = "DESC";
 
     #endregion
 
-    protected override async Task OnInitializedAsync()
-    {
-        //display total page buttons
-        pagerSize = 3;
-        pageSize = 5;
-        curPage = 1;
-        cpsModel = await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, sortDir, searchTerm);
-        totalRecords = await cpsManager.Count(searchTerm);
-        totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
-        SetPagerSize("forward");
-    }
-
     private bool isSortedAscending;
+    public bool hasSearched = false;
     private string activeSortColumn;
 
-    private async Task<List<CPS>> SortRecords(string columnName, string dir)
+    /////////////////////////////////////////////////////////////
+    //
+    // Declaring some things that will always exist in our graph
+    //
+    string[] dates = new string[0];
+    string[] statuses = new string[0];
+    string json;
+
+    /////////////////////////////////////////////////////////////
+    //
+    // Waits for search to return, then sends flattened (serialized)
+    // data over to our interop.js file
+    //
+    protected async Task generateCPSGraph()
     {
-        return await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, columnName, dir, searchTerm);
+        await this.OnSearchAsync();
+
+        await JSRuntime.InvokeAsync<bool>("generateCPSGraph", json);
+
+        await this.generateTable();
+    }
+
+    /////////////////////////////////////////////////////////////
+    //
+    // Main function that handles search between dates
+    //
+    protected async Task OnSearchAsync()
+    {
+        //Ensuring that we clean up if user decides to search again
+        Array.Resize(ref dates, 0);
+        Array.Resize(ref statuses, 0);
+
+        //Getting our range of dates, and properly putting them in the array
+        List<CPS> dateRange = await cpsManager.getDates(startDate.ToString(), endDate.ToString());
+        foreach (var date in dateRange)
+        {
+            Array.Resize(ref dates, dates.Length + 1);
+            dates[dates.GetUpperBound(0)] = date.DateOfReport;
+        }
+
+        //Getting our statuses and properly putting them in the array
+        List<Status> Statuses = await cpsManager.getStatuses();
+        foreach (var status in Statuses)
+        {
+            Array.Resize(ref statuses, statuses.Length + 1);
+            statuses[statuses.GetUpperBound(0)] = status.StatusName.ToString();
+        }
+
+        //Create our graphdata object because now we know what amount of data we are working with
+        GraphData obj = new GraphData(dates, statuses, statuses.Length, dates.Length);
+
+        /////////////////////////////////////////////////////////////
+        //
+        // For each status, get all the calculated totals between the
+        // given dates, then store them in an array, that we will
+        // place in another array (array of arrays/2d array) so that
+        // each index in the statuses array corresponds to the index
+        // of the 2d array that holds the totals i.e:
+        //
+        //  statuses[0] => CountsPerStatus[0]
+        //
+        for (int i = 0; i < statuses.Length; i++)
+        {
+            List<CPSStatus> allCountsPerStatusWithinDate = await cpsManager.getStatusReportData(startDate.ToString(), endDate.ToString(), statuses[i]);
+            int[] CountsPerStatus = new int[dates.Length];
+            for (int j = 0; j < dates.Length; j++)
+            {
+                if (dates[j] == allCountsPerStatusWithinDate.ElementAt(j).DateOfReport)
+                {
+                    CountsPerStatus[j] = allCountsPerStatusWithinDate.ElementAt(j).StatusCountAsOfDate;
+                }
+                else
+                {
+                    CountsPerStatus[j] = 0;
+                }
+                obj.StatusCounts[i, j] = CountsPerStatus[j];
+            }
+        }
+        //Flattening our graphdata object to send over for JS to handle
+        json = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
+        hasSearched = true;
+    }
+
+    ////////////////////////////////////////////////////////////////////
+    //
+    // Function that generates table and initializes page values
+    //
+    protected async Task generateTable()
+    {
+        pagerSize = 3;
+        pageSize = statuses.Length;
+        curPage = 1;
+        cpssModel = await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, startDate.ToString(), endDate.ToString(), sortDir);
+        totalRecords = await cpsManager.Count(startDate.ToString(), endDate.ToString());
+        totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
+        SetPagerSize("forward");
+        startPage = 1;
+    }
+
+    ////////////////////////////////////////////////////////////////////
+    //
+    // Functions that sort records based on what a user selects
+    //
+    private async Task<List<CPSStatus>> SortRecords(string columnName, string dir)
+    {
+        return await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, columnName, startDate.ToString(), endDate.ToString(), dir);
     }
 
     private async Task SortTable(string columnName)
     {
         if (columnName != activeSortColumn)
         {
-            cpsModel = await SortRecords(columnName, "ASC");
+            cpssModel = await SortRecords(columnName, "ASC");
             isSortedAscending = true;
             activeSortColumn = columnName;
         }
@@ -178,11 +313,11 @@ using PaychexDataConsolidationTool.DataAccess;
         {
             if (isSortedAscending)
             {
-                cpsModel = await SortRecords(columnName, "DESC");
+                cpssModel = await SortRecords(columnName, "DESC");
             }
             else
             {
-                cpsModel = await SortRecords(columnName, "ASC");
+                cpssModel = await SortRecords(columnName, "ASC");
             }
 
             isSortedAscending = !isSortedAscending;
@@ -191,6 +326,10 @@ using PaychexDataConsolidationTool.DataAccess;
         sortDir = isSortedAscending ? "ASC" : "DESC";
     }
 
+    ////////////////////////////////////////////////////////////////////
+    //
+    // Setting the icon to be either ^ v because we deserve nice things
+    //
     private string SetSortIcon(string columnName)
     {
         if (activeSortColumn != columnName)
@@ -207,13 +346,21 @@ using PaychexDataConsolidationTool.DataAccess;
         }
     }
 
+    ////////////////////////////////////////////////////////////////////
+    //
+    // Values will refresh when a user navigates to the next page
+    //
     public async Task refreshRecords(int currentPage)
     {
-        cpsModel = await cpsManager.ListAll((currentPage - 1) * pageSize, pageSize, sortColumnName, sortDir, searchTerm);
+        cpssModel = await cpsManager.ListAll((currentPage - 1) * pageSize, pageSize, sortColumnName, startDate.ToString(), endDate.ToString(), sortDir);
         curPage = currentPage;
         this.StateHasChanged();
     }
 
+    //////////////////////////////////////////////////////////////////////////
+    //
+    // This controls the forward and backward motion of tabular page turning
+    //
     public void SetPagerSize(string direction)
     {
         if (direction == "forward" && endPage < totalPages)
@@ -241,6 +388,10 @@ using PaychexDataConsolidationTool.DataAccess;
         }
     }
 
+    ////////////////////////////////////////////////////////////////////
+    //
+    // This actually navigates to the next page
+    //
     public async Task NavigateToPage(string direction)
     {
         if (direction == "next")
@@ -268,16 +419,11 @@ using PaychexDataConsolidationTool.DataAccess;
         await refreshRecords(curPage);
     }
 
-    public void FilterRecords()
-    {
-        endPage = 0;
-        this.OnInitializedAsync().Wait();
-    }
-
 
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime JSRuntime { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private ICPSManager cpsManager { get; set; }
     }
 }

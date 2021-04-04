@@ -9,7 +9,7 @@ namespace PaychexDataConsolidationTool.Entities
     public class CPT
     {
         [Key]
-        public int TypeStatusId { get; set; }
+        public int ClientsPerTypeId { get; set; }
 
         public string DateOfReport { get; set; }
 

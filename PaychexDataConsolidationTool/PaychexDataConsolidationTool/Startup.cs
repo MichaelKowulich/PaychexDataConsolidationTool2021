@@ -33,6 +33,8 @@ namespace PaychexDataConsolidationTool
                               Configuration.GetConnectionString("DefaultConnection")));
             //CPS service
             services.AddScoped<ICPSManager, CPSManager>();
+            //CPT service
+            services.AddScoped<ICPTManager, CPTManager>();
             //Register dapper in scope  
             services.AddScoped<IDapperManager, DapperManager>();
         }

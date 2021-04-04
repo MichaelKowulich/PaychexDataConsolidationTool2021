@@ -7,7 +7,7 @@ namespace PaychexDataConsolidationTool.Models
 {
     public class CPTModel
     {
-        public int TypeStatusId { get; set; }
+        public int ClientsPerTypeId { get; set; }
 
         public string DateOfReport { get; set; }
 

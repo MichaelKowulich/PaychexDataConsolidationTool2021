@@ -16,33 +16,6 @@ namespace PaychexDataConsolidationTool.Concrete
         {
             this._dapperManager = dapperManager;
         }
-
-        public Task<int> Create(CPT cpt)
-        {
-            var dbPara = new DynamicParameters();
-            dbPara.Add("DateOfReport", cpt.DateOfReport, DbType.String);
-            dbPara.Add("TypeId", cpt.TypeId, DbType.String);
-            dbPara.Add("TypeCountAsOfDate", cpt.TypeCountAsOfDate, DbType.Int64);
-            var cptId = Task.FromResult(_dapperManager.Insert<int>("[dbo].[SP_Add_CPT]",
-                            dbPara,
-                            commandType: CommandType.StoredProcedure));
-            return cptId;
-        }
-
-        public Task<CPT> GetById(int id)
-        {
-            var cpt = Task.FromResult(_dapperManager.Get<CPT>($"select * from [ClientType] where ClientsPerTypeId = {id}", null,
-                    commandType: CommandType.Text));
-            return cpt;
-        }
-
-        public Task<int> Delete(int id)
-        {
-            var deleteCPT = Task.FromResult(_dapperManager.Execute($"Delete [ClientType] where ClientsPerTypeId = {id}", null,
-                    commandType: CommandType.Text));
-            return deleteCPT;
-        }
-
         public Task<int> Count(string startDate, string endDate)
         {
             var totCPTS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) " +
@@ -63,16 +36,6 @@ namespace PaychexDataConsolidationTool.Concrete
                 $"AND[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
                 $"AND[dbo].[ClientsPerType].DateOfReport <= '{endDate}' " +
                 $"ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;", null, commandType: CommandType.Text));
-            return cptt;
-        }
-        public Task<List<CPT>> SearchDates(string orderBy, string startDate, string endDate, string direction = "DESC")
-        {
-            var cptt = Task.FromResult(_dapperManager.GetAll<CPT>
-                ($"Select [dbo].[ClientsPerType].DateOfReport, [dbo].[Type].TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
-                $"from[dbo].[ClientsPerType], [dbo].[Type] " +
-                $"WHERE[dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
-                $"AND[dbo].[ClientsPerType].DateOfReport >= '{startDate}' AND[dbo].[ClientsPerType].DateOfReport <= '{endDate}' " +
-                $"ORDER BY[dbo].[ClientsPerType].DateOfReport, [dbo].[Type].TypeId ", null, commandType: CommandType.Text));
             return cptt;
         }
         public Task<int> CountAfterSearch(string startDate, string endDate)
@@ -117,19 +80,6 @@ namespace PaychexDataConsolidationTool.Concrete
                 $"AND [dbo].[Type].TypeName = '{typeName}' " +
                 $"ORDER BY[dbo].[ClientsPerType].DateOfReport");
             return cptt;
-        }
-        public Task<int> Update(CPT cpt)
-        {
-            var dbPara = new DynamicParameters();
-            dbPara.Add("ClientTypeId", cpt.ClientsPerTypeId);
-            dbPara.Add("DateOfReport", cpt.DateOfReport);
-            dbPara.Add("TypeId", cpt.TypeId, DbType.String);
-            dbPara.Add("TypeCountAsOfDate", cpt.TypeCountAsOfDate, DbType.Int64);
-
-            var updateCPT = Task.FromResult(_dapperManager.Update<int>("[dbo].[SP_Update_CPT]",
-                            dbPara,
-                            commandType: CommandType.StoredProcedure));
-            return updateCPT;
         }
     }
 }

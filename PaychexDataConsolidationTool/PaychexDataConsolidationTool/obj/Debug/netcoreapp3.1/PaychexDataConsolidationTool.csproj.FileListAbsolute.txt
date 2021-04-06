@@ -484,3 +484,5 @@ C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolid
 C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\obj\Debug\netcoreapp3.1\PaychexDataConsolidationTool.dll
 C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\obj\Debug\netcoreapp3.1\PaychexDataConsolidationTool.pdb
 C:\Users\austi\source\repos\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\obj\Debug\netcoreapp3.1\PaychexDataConsolidationTool.genruntimeconfig.cache
+C:\Users\Mike\Desktop\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\FetchCPT.razor.g.cs
+C:\Users\Mike\Desktop\PaychexDataConsolidationTool2021\PaychexDataConsolidationTool\PaychexDataConsolidationTool\obj\Debug\netcoreapp3.1\Razor\Pages\FetchCPT.razor.g.cs

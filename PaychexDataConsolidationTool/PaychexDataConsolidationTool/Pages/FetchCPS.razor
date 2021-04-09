@@ -242,13 +242,20 @@
             int[] CountsPerStatus = new int[dates.Length];
             for (int j = 0; j < dates.Length; j++)
             {
-                if (dates[j] == allCountsPerStatusWithinDate.ElementAt(j).DateOfReport)
+                if (allCountsPerStatusWithinDate.Count == 0)
                 {
-                    CountsPerStatus[j] = allCountsPerStatusWithinDate.ElementAt(j).StatusCountAsOfDate;
+                    CountsPerStatus[j] = 0;
                 }
                 else
                 {
-                    CountsPerStatus[j] = 0;
+                    if (dates[j] == allCountsPerStatusWithinDate.ElementAt(j).DateOfReport)
+                    {
+                        CountsPerStatus[j] = allCountsPerStatusWithinDate.ElementAt(j).StatusCountAsOfDate;
+                    }
+                    else
+                    {
+                        CountsPerStatus[j] = 0;
+                    }
                 }
                 obj.StatusCounts[i, j] = CountsPerStatus[j];
             }

@@ -243,13 +243,20 @@
             int[] CountsPerType = new int[dates.Length];
             for (int j = 0; j < dates.Length; j++)
             {
-                if (dates[j] == allCountsPerTypeWithinDate.ElementAt(j).DateOfReport)
+                if (allCountsPerTypeWithinDate.Count == 0)
                 {
-                    CountsPerType[j] = allCountsPerTypeWithinDate.ElementAt(j).TypeCountAsOfDate;
+                    CountsPerType[j] = 0;
                 }
                 else
                 {
-                    CountsPerType[j] = 0;
+                    if (dates[j] == allCountsPerTypeWithinDate.ElementAt(j).DateOfReport)
+                    {
+                        CountsPerType[j] = allCountsPerTypeWithinDate.ElementAt(j).TypeCountAsOfDate;
+                    }
+                    else
+                    {
+                        CountsPerType[j] = 0;
+                    }
                 }
                 obj.TypeCounts[i, j] = CountsPerType[j];
             }

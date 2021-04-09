@@ -20,10 +20,11 @@ namespace PaychexDataConsolidationTool.Concrete
         public Task<int> Count(string startDate, string endDate)
         {
             var totCPSS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) " +
-                $"from[dbo].[ClientsPerStatus], [dbo].[Status] " +
-                $"WHERE[dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
-                $"AND[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
-                $"AND[dbo].[ClientsPerStatus].DateOfReport <= '{endDate}';", null,
+                $"from [dbo].[ClientsPerStatus] " +
+                $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
+                $"WHERE " +
+                $"[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
+                $"AND [dbo].[ClientsPerStatus].DateOfReport <= '{endDate}';", null,
                     commandType: CommandType.Text));
             return totCPSS;
         }
@@ -32,9 +33,10 @@ namespace PaychexDataConsolidationTool.Concrete
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<CPSStatus>
                 ($"Select FORMAT ([dbo].[ClientsPerStatus].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Status].StatusName as StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate as StatusCountAsOfDate " +
-                $"from[dbo].[ClientsPerStatus], [dbo].[Status] " +
-                $"WHERE[dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
-                $"AND[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
+                $"from[dbo].[ClientsPerStatus] " +
+                $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
+                $"WHERE " +
+                $"[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
                 $"AND[dbo].[ClientsPerStatus].DateOfReport <= '{endDate}' " +
                 $"ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;", null, commandType: CommandType.Text));
             return cpss;
@@ -44,7 +46,6 @@ namespace PaychexDataConsolidationTool.Concrete
         {
             var totCPS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) from [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}'", null,
                     commandType: CommandType.Text));
-            //Console.WriteLine($"select COUNT(*) from [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}'");
             return totCPS;
         }
 

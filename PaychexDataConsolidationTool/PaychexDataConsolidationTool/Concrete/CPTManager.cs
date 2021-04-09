@@ -19,10 +19,11 @@ namespace PaychexDataConsolidationTool.Concrete
         public Task<int> Count(string startDate, string endDate)
         {
             var totCPTS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) " +
-                $"from[dbo].[ClientsPerType], [dbo].[Type] " +
-                $"WHERE[dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
-                $"AND[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
-                $"AND[dbo].[ClientsPerType].DateOfReport <= '{endDate}';", null,
+                $"from [dbo].[ClientsPerType] " +
+                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"WHERE " +
+                $"[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
+                $"AND [dbo].[ClientsPerType].DateOfReport <= '{endDate}';", null,
                     commandType: CommandType.Text));
             return totCPTS;
         }
@@ -31,10 +32,11 @@ namespace PaychexDataConsolidationTool.Concrete
         {
             var cptt = Task.FromResult(_dapperManager.GetAll<CPTType>
                 ($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Type].TypeName as TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate as TypeCountAsOfDate " +
-                $"from[dbo].[ClientsPerType], [dbo].[Type] " +
-                $"WHERE[dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
-                $"AND[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
-                $"AND[dbo].[ClientsPerType].DateOfReport <= '{endDate}' " +
+                $"from [dbo].[ClientsPerType] " +
+                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"WHERE " +
+                $"[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
+                $"AND [dbo].[ClientsPerType].DateOfReport <= '{endDate}' " +
                 $"ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;", null, commandType: CommandType.Text));
             return cptt;
         }

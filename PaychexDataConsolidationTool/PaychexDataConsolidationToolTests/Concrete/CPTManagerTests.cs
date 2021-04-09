@@ -129,10 +129,11 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
             {
                 mock.Mock<IDapperManager>()
                     .Setup(x => x.GetAll<CPTType>($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Type].TypeName as TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate as TypeCountAsOfDate " +
-                $"from[dbo].[ClientsPerType], [dbo].[Type] " +
-                $"WHERE[dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
-                $"AND[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
-                $"AND[dbo].[ClientsPerType].DateOfReport <= '2021-04-03' " +
+                $"from [dbo].[ClientsPerType] " +
+                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"WHERE " +
+                $"[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
+                $"AND [dbo].[ClientsPerType].DateOfReport <= '2021-04-03' " +
                 $"ORDER BY DateOfReport ASC OFFSET 0 ROWS FETCH NEXT 8 ROWS ONLY;", null, CommandType.Text))
                     .Returns(GetSampleListAll());
 
@@ -288,10 +289,11 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
             {
                 mock.Mock<IDapperManager>()
                     .Setup(x => x.Get<int>($"select COUNT(*) " +
-                $"from[dbo].[ClientsPerType], [dbo].[Type] " +
-                $"WHERE[dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
-                $"AND[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
-                $"AND[dbo].[ClientsPerType].DateOfReport <= '2021-04-03';", null, CommandType.Text))
+                $"from [dbo].[ClientsPerType] " +
+                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"WHERE " +
+                $"[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
+                $"AND [dbo].[ClientsPerType].DateOfReport <= '2021-04-03';", null, CommandType.Text))
                     .Returns(GetSampleCount());
 
                 var cls = mock.Create<CPTManager>();

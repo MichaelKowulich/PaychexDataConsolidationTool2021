@@ -219,9 +219,10 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
             {
                 mock.Mock<IDapperManager>()
                     .Setup(x => x.GetAll<CPTType>($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Type].TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
-                $"from[dbo].[ClientsPerType], [dbo].[Type] " +
-                $"WHERE[dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
-                $"AND[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
+                $"from [dbo].[ClientsPerType] " +
+                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"WHERE  " +
+                $"[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
                 $"AND[dbo].[ClientsPerType].DateOfReport <= '2021-04-03' " +
                 $"AND [dbo].[Type].TypeName = 'Standalone' " +
                 $"ORDER BY[dbo].[ClientsPerType].DateOfReport", null, CommandType.Text))

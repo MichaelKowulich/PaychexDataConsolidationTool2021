@@ -66,16 +66,18 @@ namespace PaychexDataConsolidationTool.Concrete
         {
             var cptt = Task.FromResult(_dapperManager.GetAll<CPTType>
                 ($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Type].TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
-                $"from[dbo].[ClientsPerType], [dbo].[Type] " +
-                $"WHERE[dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
-                $"AND[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
+                $"from [dbo].[ClientsPerType] " +
+                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"WHERE  " +
+                $"[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
                 $"AND[dbo].[ClientsPerType].DateOfReport <= '{endDate}' " +
                 $"AND [dbo].[Type].TypeName = '{typeName}' " +
                 $"ORDER BY[dbo].[ClientsPerType].DateOfReport", null, commandType: CommandType.Text));
-            Console.WriteLine($"Select [dbo].[ClientsPerType].DateOfReport, [dbo].[Type].TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
-                $"from[dbo].[ClientsPerType], [dbo].[Type] " +
-                $"WHERE[dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
-                $"AND[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
+            Console.WriteLine($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Type].TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
+                $"from[dbo].[ClientsPerType] " +
+                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeID" +
+                $"WHERE  " +
+                $"[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
                 $"AND[dbo].[ClientsPerType].DateOfReport <= '{endDate}' " +
                 $"AND [dbo].[Type].TypeName = '{typeName}' " +
                 $"ORDER BY[dbo].[ClientsPerType].DateOfReport");

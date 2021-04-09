@@ -68,16 +68,18 @@ namespace PaychexDataConsolidationTool.Concrete
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<CPSStatus>
                 ($"Select FORMAT ([dbo].[ClientsPerStatus].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Status].StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate " +
-                $"from[dbo].[ClientsPerStatus], [dbo].[Status] " +
-                $"WHERE[dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
-                $"AND[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
+                $"from[dbo].[ClientsPerStatus] " +
+                $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
+                $"WHERE " +
+                $"[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
                 $"AND[dbo].[ClientsPerStatus].DateOfReport <= '{endDate}' " +
                 $"AND [dbo].[Status].StatusName = '{statusName}' " +
                 $"ORDER BY[dbo].[ClientsPerStatus].DateOfReport", null, commandType: CommandType.Text));
             Console.WriteLine($"Select [dbo].[ClientsPerStatus].DateOfReport, [dbo].[Status].StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate " +
-                $"from[dbo].[ClientsPerStatus], [dbo].[Status] " +
-                $"WHERE[dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
-                $"AND[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
+                $"from[dbo].[ClientsPerStatus] " +
+                $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
+                $"WHERE " +
+                $"[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
                 $"AND[dbo].[ClientsPerStatus].DateOfReport <= '{endDate}' " +
                 $"AND [dbo].[Status].StatusName = '{statusName}' " +
                 $"ORDER BY[dbo].[ClientsPerStatus].DateOfReport");

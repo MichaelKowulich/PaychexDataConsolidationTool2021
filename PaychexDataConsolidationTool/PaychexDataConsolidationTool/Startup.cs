@@ -35,6 +35,8 @@ namespace PaychexDataConsolidationTool
             services.AddScoped<ICPSManager, CPSManager>();
             //CPT service
             services.AddScoped<ICPTManager, CPTManager>();
+            //UPT service
+            services.AddScoped<IUPTManager, UPTManager>();
             //Register dapper in scope  
             services.AddScoped<IDapperManager, DapperManager>();
         }

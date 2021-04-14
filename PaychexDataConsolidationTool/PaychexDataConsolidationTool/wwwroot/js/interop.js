@@ -214,3 +214,39 @@ function generateCPTGraph(graphdata) {
     }
     return true;
 }
+
+//--HOME PAGE PI CHART GENERATION
+function generatePiChart(graphdata) {
+    graphdata = JSON.parse(graphdata);
+    console.dir(graphdata);
+    var canvas = document.getElementById(graphdata.EntityName); // Referencing the ID of the <canvas> tag in our razor file
+    var ctx = canvas.getContext('2d'); // This is a 2d graph
+    //Default font options
+    Chart.defaults.global.defaultFontColor = 'black';
+    Chart.defaults.global.defaultFontSize = 16;
+    var i = 0;
+    var colors = [];
+    graphdata.AllEntityNames.forEach(() => {
+        var randomBetween = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+        var r = randomBetween(0, 255);
+        var g = randomBetween(0, 255);
+        var b = randomBetween(0, 255);
+        var rgb = `rgb(${r},${g},${b})`;
+        colors[i] = rgb;
+        i++
+    });
+
+    var myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: graphdata.AllEntityNames,
+            datasets: [{
+                label: 'Count',
+                data: graphdata.AllEntityCountsPerName,
+                backgroundColor: colors,
+                borderWidth: 1,
+            }]
+        }
+    })
+        return true;
+}

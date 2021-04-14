@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using Newtonsoft.Json;
 using Xunit;
 using Type = PaychexDataConsolidationTool.Entities.Type;
 
@@ -335,6 +336,134 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
         private int GetSampleCountAfterSearch()
         {
             return 32;
+        }
+
+        //
+        //  Get Most Recent Date Valid Call
+        //
+
+        [Fact]
+        public async void GetMostRecentDate_ValidCall()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                mock.Mock<IDapperManager>()
+                    .Setup(x => x.GetAll<CPT>($"SELECT MAX(FORMAT (DateOfReport, 'yyyy-MM-dd') ) as DateOfReport FROM [dbo].[ClientsPerType]", null, CommandType.Text))
+                    .Returns(GetSampleGetMostRecentDate());
+
+                var cls = mock.Create<CPTManager>();
+                var expected = GetSampleGetMostRecentDate();
+
+                var actual = await cls.getMostRecentDate();
+
+                string jsonActual = JsonConvert.SerializeObject(actual);
+                string jsonExpected = JsonConvert.SerializeObject(expected);
+                Xunit.Assert.Equal(jsonExpected, jsonActual);
+
+            }
+        }
+        private List<CPT> GetSampleGetMostRecentDate()
+        {
+            List<CPT> output = new List<CPT>
+            {
+                new CPT
+                {
+                    ClientsPerTypeId = 0,
+                    DateOfReport = "2021-04-03",
+                    TypeId = 0,
+                    TypeCountAsOfDate = 0,
+                },
+            };
+            return output;
+        }
+
+        //
+        // Get Most Recent Status Counts Valid Call
+        //
+        [Fact]
+        public async void getMostRecentStatusCounts_ValidCall()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                mock.Mock<IDapperManager>()
+                    .Setup(x => x.GetAll<CPTType>($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Type].TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
+                $"FROM [dbo].[ClientsPerType] " +
+                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"WHERE DateOfReport = '2021-04-03' " +
+                $"ORDER BY [dbo].[Type].TypeId", null, CommandType.Text))
+                    .Returns(GetSampleGetMostRecentStatusCounts());
+
+                var cls = mock.Create<CPTManager>();
+                var expected = GetSampleGetMostRecentStatusCounts();
+
+                var actual = await cls.getMostRecentStatusCounts("2021-04-03");
+
+                Xunit.Assert.True(actual != null);
+                Xunit.Assert.Equal(expected.Count, actual.Count);
+                for (int i = 0; i < expected.Count; i++)
+                {
+                    Xunit.Assert.Equal(expected[i].DateOfReport, actual[i].DateOfReport);
+                    Xunit.Assert.Equal(expected[i].TypeCountAsOfDate, actual[i].TypeCountAsOfDate);
+                    Xunit.Assert.Equal(expected[i].TypeName, actual[i].TypeName);
+                }
+            }
+        }
+        private List<CPTType> GetSampleGetMostRecentStatusCounts()
+        {
+            List<CPTType> output = new List<CPTType>
+            {
+                new CPTType
+                {
+                    DateOfReport = "2021-04-03",
+                    TypeName = "Standalone",
+                    TypeCountAsOfDate = 2000,
+
+                },
+                new CPTType
+                {
+                    DateOfReport = "2021-04-03",
+                    TypeName = "Nettime Organic",
+                    TypeCountAsOfDate = 20001,
+                },
+                new CPTType
+                {
+                    DateOfReport = "2021-04-03",
+                    TypeName = "FlexTime",
+                    TypeCountAsOfDate = 200,
+                },
+                new CPTType
+                {
+                    DateOfReport = "2021-04-03",
+                    TypeName = "Essentials",
+                    TypeCountAsOfDate = 100,
+                },
+                new CPTType
+                {
+                    DateOfReport = "2021-04-03",
+                    TypeName = "C2C All",
+                    TypeCountAsOfDate = 300,
+                },
+                new CPTType
+                {
+                    DateOfReport = "2021-04-03",
+                    TypeName = "StratusTime Integrated",
+                    TypeCountAsOfDate = 500,
+                },
+                new CPTType
+                {
+                    DateOfReport = "2021-04-03",
+                    TypeName = "C2C Clients with same FEIN",
+                    TypeCountAsOfDate = 40000,
+                },
+                new CPTType
+                {
+                    DateOfReport = "2021-04-03",
+                    TypeName = "C2C Clients with different FEIN",
+                    TypeCountAsOfDate = 100,
+                },
+            };
+
+            return output;
         }
     }
 }

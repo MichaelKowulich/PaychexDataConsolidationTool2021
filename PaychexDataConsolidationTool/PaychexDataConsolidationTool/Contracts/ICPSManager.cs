@@ -12,5 +12,7 @@ namespace PaychexDataConsolidationTool.Contracts
         Task<List<Status>> getStatuses();
         Task<List<CPSStatus>> getStatusReportData(string startDate, string endDate, string statusName);
         public Task<int> CountAfterSearch(string startDate, string endDate);
+        public Task<List<CPS>> getMostRecentDate();
+        public Task<List<CPSStatus>> getMostRecentStatusCounts(string date);
     }
 }

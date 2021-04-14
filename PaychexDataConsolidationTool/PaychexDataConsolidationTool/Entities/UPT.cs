@@ -15,6 +15,6 @@ namespace PaychexDataConsolidationTool.Entities
 
         public string UserTypeId { get; set; }
 
-        public int TypeCountAsOfDate { get; set; }
+        public int UserTypeCountAsOfDate { get; set; }
     }
 }

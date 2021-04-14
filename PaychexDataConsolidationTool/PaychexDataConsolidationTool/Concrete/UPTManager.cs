@@ -31,7 +31,7 @@ namespace PaychexDataConsolidationTool.Concrete
         public Task<List<UPTType>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string direction = "DESC", string search = "")
         {
             var uptt = Task.FromResult(_dapperManager.GetAll<UPTType>
-                ($"Select FORMAT ([dbo].[UsersPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName as UserTypeName, [dbo].[UsersPerType].TypeCountAsOfDate as TypeCountAsOfDate " +
+                ($"Select FORMAT ([dbo].[UsersPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName as UserTypeName, [dbo].[UsersPerType].UserTypeCountAsOfDate as UserTypeCountAsOfDate " +
                 $"from [dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeId " +
                 $"WHERE " +
@@ -67,7 +67,7 @@ namespace PaychexDataConsolidationTool.Concrete
         public Task<List<UPTType>> getTypeReportData(string startDate, string endDate, string typeName)
         {
             var uptt = Task.FromResult(_dapperManager.GetAll<UPTType>
-                ($"Select FORMAT ([dbo].[UsersPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName, [dbo].[UsersPerType].TypeCountAsOfDate " +
+                ($"Select FORMAT ([dbo].[UsersPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName, [dbo].[UsersPerType].UserTypeCountAsOfDate " +
                 $"from [dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeId " +
                 $"WHERE  " +
@@ -75,7 +75,7 @@ namespace PaychexDataConsolidationTool.Concrete
                 $"AND[dbo].[UsersPerType].DateOfReport <= '{endDate}' " +
                 $"AND [dbo].[UserType].UserTypeName = '{typeName}' " +
                 $"ORDER BY[dbo].[UsersPerType].DateOfReport", null, commandType: CommandType.Text));
-            Console.WriteLine($"Select FORMAT ([dbo].[UsersPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName, [dbo].[UsersPerType].TypeCountAsOfDate " +
+            Console.WriteLine($"Select FORMAT ([dbo].[UsersPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName, [dbo].[UsersPerType].UserTypeCountAsOfDate " +
                 $"from[dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeID" +
                 $"WHERE  " +
@@ -96,7 +96,7 @@ namespace PaychexDataConsolidationTool.Concrete
         public Task<List<UPTType>> getMostRecentTypeCounts(string date)
         {
             var uptt = Task.FromResult(_dapperManager.GetAll<UPTType>
-                ($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName, [dbo].[UsersPerType].TypeCountAsOfDate " +
+                ($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName, [dbo].[UsersPerType].UserTypeCountAsOfDate " +
                 $"FROM [dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeId " +
                 $"WHERE DateOfReport = '{date}' " +

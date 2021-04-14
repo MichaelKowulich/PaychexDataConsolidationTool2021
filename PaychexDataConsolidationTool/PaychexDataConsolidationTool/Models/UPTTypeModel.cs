@@ -13,7 +13,7 @@ namespace PaychexDataConsolidationTool.Models
 
         public int UserTypeId { get; set; }
 
-        public int TypeCountAsOfDate { get; set; }
+        public int UserTypeCountAsOfDate { get; set; }
 
         public int UserTypeName { get; set; }
     }

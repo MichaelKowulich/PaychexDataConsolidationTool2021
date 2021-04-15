@@ -237,6 +237,7 @@
         //
         //  types[0] => CountsPerType[0]
         //
+        int overflow = 0;
         for (int i = 0; i < types.Length; i++)
         {
             List<CPTType> allCountsPerTypeWithinDate = await cptManager.getTypeReportData(startDate.ToString(), endDate.ToString(), types[i]);
@@ -249,9 +250,10 @@
                 }
                 else
                 {
-                    if (dates[j] == allCountsPerTypeWithinDate.ElementAt(j).DateOfReport)
+                    if (dates[j] == allCountsPerTypeWithinDate.ElementAt(overflow).DateOfReport)
                     {
-                        CountsPerType[j] = allCountsPerTypeWithinDate.ElementAt(j).TypeCountAsOfDate;
+                        CountsPerType[j] = allCountsPerTypeWithinDate.ElementAt(overflow).TypeCountAsOfDate;
+                        overflow++;
                     }
                     else
                     {
@@ -260,6 +262,7 @@
                 }
                 obj.TypeCounts[i, j] = CountsPerType[j];
             }
+            overflow = 0;
         }
         //Flattening our graphdata object to send over for JS to handle
         json = Newtonsoft.Json.JsonConvert.SerializeObject(obj);

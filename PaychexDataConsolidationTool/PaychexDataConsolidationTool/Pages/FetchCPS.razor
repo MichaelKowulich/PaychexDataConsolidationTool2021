@@ -235,6 +235,7 @@
         //
         //  statuses[0] => CountsPerStatus[0]
         //
+        int overflow = 0;
         for (int i = 0; i < statuses.Length; i++)
         {
             List<CPSStatus> allCountsPerStatusWithinDate = await cpsManager.getStatusReportData(startDate.ToString(), endDate.ToString(), statuses[i]);
@@ -247,9 +248,10 @@
                 }
                 else
                 {
-                    if (dates[j] == allCountsPerStatusWithinDate.ElementAt(j).DateOfReport)
+                    if (dates[j] == allCountsPerStatusWithinDate.ElementAt(overflow).DateOfReport)
                     {
-                        CountsPerStatus[j] = allCountsPerStatusWithinDate.ElementAt(j).StatusCountAsOfDate;
+                        CountsPerStatus[j] = allCountsPerStatusWithinDate.ElementAt(overflow).StatusCountAsOfDate;
+                        overflow++;
                     }
                     else
                     {
@@ -258,6 +260,7 @@
                 }
                 obj.StatusCounts[i, j] = CountsPerStatus[j];
             }
+            overflow = 0;
         }
         //Flattening our graphdata object to send over for JS to handle
         json = Newtonsoft.Json.JsonConvert.SerializeObject(obj);

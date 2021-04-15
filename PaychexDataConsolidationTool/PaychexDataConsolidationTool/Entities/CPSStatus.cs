@@ -13,7 +13,7 @@ namespace PaychexDataConsolidationTool.Entities
 
         public string DateOfReport { get; set; }
 
-        public string StatusId { get; set; }
+        public int StatusId { get; set; }
 
         public int StatusCountAsOfDate { get; set; }
 

@@ -362,7 +362,7 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 {
                     ClientStatusId = 0,
                     DateOfReport = "2021-04-03",
-                    StatusId = null,
+                    StatusId = 0,
                     StatusCountAsOfDate = 0,
                 },
             };

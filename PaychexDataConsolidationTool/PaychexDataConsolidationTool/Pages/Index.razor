@@ -1,6 +1,7 @@
 ﻿@page "/"
 @inject ICPSManager cpsManager
 @inject ICPTManager cptManager
+@inject IUPTManager uptManager
 @inject IJSRuntime JSRuntime
 @namespace PaychexDataConsolidationTool
 <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -47,14 +48,17 @@
 }
 
 @code {
-    string[] Entities = { "Status", "Type" };
+        string[] Entities = { "Status", "Type", "User" };
 
-    string[] statuses = new string[0];
-    int[] statusData = new int[0];
-    string StatusJson;
-    string[] types = new string[0];
-    int[] typeData = new int[0];
-    string TypeJson;
+        string[] statuses = new string[0];
+        int[] statusData = new int[0];
+        string StatusJson;
+        string[] types = new string[0];
+        int[] typeData = new int[0];
+        string TypeJson;
+        string[] users = new string[0];
+        int[] userData = new int[0];
+        string UserJson;
 
 
     protected override async Task OnInitializedAsync()
@@ -66,6 +70,7 @@
     {
         await JSRuntime.InvokeAsync<bool>("generatePiChart", StatusJson);
         await JSRuntime.InvokeAsync<bool>("generatePiChart", TypeJson);
+        await JSRuntime.InvokeAsync<bool>("generatePiChart", UserJson);
     }
 
     public class GraphData
@@ -111,5 +116,19 @@
         }
         GraphData ClientsPerTypeData = new GraphData("Type", types, typeData);
         TypeJson = Newtonsoft.Json.JsonConvert.SerializeObject(ClientsPerTypeData);
+
+        //Users Per Type
+        List<UPT> MostRecentUPTDate = await uptManager.getMostRecentDate();
+        string mostRecentUPTDate = MostRecentUPTDate.ElementAt(0).DateOfReport;
+        List<UPTType> MostRecentUPTData = await uptManager.getMostRecentTypeCounts(mostRecentUPTDate);
+        foreach (var upt in MostRecentUPTData)
+        {
+            Array.Resize(ref users, users.Length + 1);
+            users[users.GetUpperBound(0)] = upt.UserTypeName.ToString();
+            Array.Resize(ref userData, userData.Length + 1);
+            userData[userData.GetUpperBound(0)] = upt.UserTypeCountAsOfDate;
+        }
+        GraphData UsersPerTypeData = new GraphData("User", users, userData);
+        UserJson = Newtonsoft.Json.JsonConvert.SerializeObject(UsersPerTypeData);
     }
 }

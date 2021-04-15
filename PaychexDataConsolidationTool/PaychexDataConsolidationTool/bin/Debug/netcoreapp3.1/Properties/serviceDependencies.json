@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "paychex-data-consolidation-tool.database.windows.net"
+    }
+  }
+}

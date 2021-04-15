@@ -106,7 +106,7 @@ function generateCPSGraph(graphdata) {
     }
     return true; 
 }
-//--TYPE
+//--Client TYPE
 function generateCPTGraph(graphdata) {
 
     var canvas = document.getElementById("lineGraph"); // Referencing the ID of the <canvas> tag in our razor file
@@ -215,7 +215,7 @@ function generateCPTGraph(graphdata) {
     return true;
 }
 
-//--TYPE
+//--UserTYPE
 function generateUPTGraph(graphdata) {
 
     var canvas = document.getElementById("lineGraph"); // Referencing the ID of the <canvas> tag in our razor file

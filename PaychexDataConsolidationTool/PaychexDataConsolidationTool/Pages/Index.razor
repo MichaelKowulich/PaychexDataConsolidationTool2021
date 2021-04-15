@@ -1,5 +1,115 @@
 ﻿@page "/"
+@inject ICPSManager cpsManager
+@inject ICPTManager cptManager
+@inject IJSRuntime JSRuntime
+@namespace PaychexDataConsolidationTool
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<style>
+    .btn-custom {
+        color: black;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+        transition: background-color .3s;
+        border: 2px solid #000;
+        margin: 0px 5px 0px 5px;
+    }
 
-<h1>Hello, world!</h1>
+    .centerpiece {
+        width: 100%;
+        height: 400px;
+        color: white;
+        text-align: center;
+        padding-bottom: 15px;
+        padding-top: 15px;
+    }
 
-Welcome to your new app.
+    .chartBox {
+        width: 600px;
+        position: relative;
+        margin: 20px;
+        display: inline-block;
+        background: white;
+        padding: 5px;
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        border-radius: 3px;
+        overflow: auto;
+    }
+</style>
+
+<h1> Paychex Data Consolidation Tool</h1>
+@foreach (var entity in Entities)
+{
+    <h2> @entity Overview: </h2>
+    <div class="chartBox">
+        <canvas id="@entity"></canvas>
+    </div>
+}
+
+@code {
+    string[] Entities = { "Status", "Type" };
+
+    string[] statuses = new string[0];
+    int[] statusData = new int[0];
+    string StatusJson;
+    string[] types = new string[0];
+    int[] typeData = new int[0];
+    string TypeJson;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await generatePiGraphs();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeAsync<bool>("generatePiChart", StatusJson);
+        await JSRuntime.InvokeAsync<bool>("generatePiChart", TypeJson);
+    }
+
+    public class GraphData
+    {
+        public string EntityName;
+        public string[] AllEntityNames { get; set; }
+        public int[] AllEntityCountsPerName { get; set; }
+
+        public GraphData(string EntityName, string[] AllEntityNames, int[] AllEntityCountsPerName)
+        {
+            this.EntityName = EntityName;
+            this.AllEntityNames = AllEntityNames;
+            this.AllEntityCountsPerName = AllEntityCountsPerName;
+        }
+    }
+
+    protected async Task generatePiGraphs()
+    {
+        //Clients Per Status
+        List<CPS> MostRecentCPSDate = await cpsManager.getMostRecentDate();
+        string mostRecentCPSDate = MostRecentCPSDate.ElementAt(0).DateOfReport;
+        List<CPSStatus> MostRecentCPSData = await cpsManager.getMostRecentStatusCounts(mostRecentCPSDate);
+        foreach (var cps in MostRecentCPSData)
+        {
+            Array.Resize(ref statuses, statuses.Length + 1);
+            statuses[statuses.GetUpperBound(0)] = cps.StatusName.ToString();
+            Array.Resize(ref statusData, statusData.Length + 1);
+            statusData[statusData.GetUpperBound(0)] = cps.StatusCountAsOfDate;
+        }
+        GraphData ClientsPerStatusData = new GraphData("Status", statuses, statusData);
+        StatusJson = Newtonsoft.Json.JsonConvert.SerializeObject(ClientsPerStatusData);
+
+        //Clients Per Type
+        List<CPT> MostRecentCPTDate = await cptManager.getMostRecentDate();
+        string mostRecentCPTDate = MostRecentCPTDate.ElementAt(0).DateOfReport;
+        List<CPTType> MostRecentCPTData = await cptManager.getMostRecentStatusCounts(mostRecentCPTDate);
+        foreach (var cpt in MostRecentCPTData)
+        {
+            Array.Resize(ref types, types.Length + 1);
+            types[types.GetUpperBound(0)] = cpt.TypeName.ToString();
+            Array.Resize(ref typeData, typeData.Length + 1);
+            typeData[typeData.GetUpperBound(0)] = cpt.TypeCountAsOfDate;
+        }
+        GraphData ClientsPerTypeData = new GraphData("Type", types, typeData);
+        TypeJson = Newtonsoft.Json.JsonConvert.SerializeObject(ClientsPerTypeData);
+    }
+}

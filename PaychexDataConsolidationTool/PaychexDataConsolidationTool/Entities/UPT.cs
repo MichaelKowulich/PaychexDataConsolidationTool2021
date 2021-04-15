@@ -6,17 +6,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PaychexDataConsolidationTool.Entities
 {
-    public class CPTType
+    public class UPT
     {
         [Key]
-        public int ClientPerTypeId { get; set; }
+        public int UserPerTypeId { get; set; }
 
         public string DateOfReport { get; set; }
 
-        public int TypeId { get; set; }
+        public int UserTypeId { get; set; }
 
-        public int TypeCountAsOfDate { get; set; }
-
-        public string TypeName { get; set; }
+        public int UserTypeCountAsOfDate { get; set; }
     }
 }

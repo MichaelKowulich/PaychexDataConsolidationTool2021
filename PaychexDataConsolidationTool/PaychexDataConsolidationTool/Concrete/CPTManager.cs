@@ -85,5 +85,23 @@ namespace PaychexDataConsolidationTool.Concrete
                 $"ORDER BY[dbo].[ClientsPerType].DateOfReport");
             return cptt;
         }
+
+        public Task<List<CPT>> getMostRecentDate()
+        {
+            var cpss = Task.FromResult(_dapperManager.GetAll<CPT>
+                ($"SELECT MAX(FORMAT (DateOfReport, 'yyyy-MM-dd') ) as DateOfReport FROM [dbo].[ClientsPerType]", null, commandType: CommandType.Text));
+            return cpss;
+        }
+
+        public Task<List<CPTType>> getMostRecentStatusCounts(string date)
+        {
+            var cpss = Task.FromResult(_dapperManager.GetAll<CPTType>
+                ($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Type].TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
+                $"FROM [dbo].[ClientsPerType] " +
+                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"WHERE DateOfReport = '{date}' " +
+                $"ORDER BY [dbo].[Type].TypeId", null, commandType: CommandType.Text));
+            return cpss;
+        }
     }
 }

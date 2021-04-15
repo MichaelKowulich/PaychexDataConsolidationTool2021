@@ -6,6 +6,7 @@ using PaychexDataConsolidationTool.Models;
 using PaychexDataConsolidationTool.Entities;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using System.Data;
 using System.Text;
 using Xunit;
@@ -328,6 +329,126 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
         private int GetSampleCountAfterSearch()
         {
             return 28;
+        }
+        //
+        //  Get Most Recent Date Valid Call
+        //
+
+        [Fact]
+        public async void GetMostRecentDate_ValidCall()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                mock.Mock<IDapperManager>()
+                    .Setup(x => x.GetAll<CPS>($"SELECT MAX(FORMAT (DateOfReport, 'yyyy-MM-dd') ) as DateOfReport FROM [dbo].[ClientsPerStatus]", null, CommandType.Text))
+                    .Returns(GetSampleGetMostRecentDate());
+
+                var cls = mock.Create<CPSManager>();
+                var expected = GetSampleGetMostRecentDate();
+
+                var actual = await cls.getMostRecentDate();
+
+                string jsonActual = JsonConvert.SerializeObject(actual);
+                string jsonExpected = JsonConvert.SerializeObject(expected);
+                Xunit.Assert.Equal(jsonExpected, jsonActual);
+
+            }
+        }
+        private List<CPS> GetSampleGetMostRecentDate()
+        {
+            List<CPS> output = new List<CPS>
+            {
+                new CPS
+                {
+                    ClientStatusId = 0,
+                    DateOfReport = "2021-04-03",
+                    StatusId = 0,
+                    StatusCountAsOfDate = 0,
+                },
+            };
+            return output;
+        }
+        //
+        // Get Most Recent Status Counts Valid Call
+        //
+        [Fact]
+        public async void getMostRecentStatusCounts_ValidCall()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                mock.Mock<IDapperManager>()
+                    .Setup(x => x.GetAll<CPSStatus>($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Status].StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate " +
+                $"FROM [dbo].[ClientsPerStatus] " +
+                $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
+                $"WHERE DateOfReport = '2021-04-03' " +
+                $"ORDER BY [dbo].[Status].StatusId", null, CommandType.Text))
+                    .Returns(GetSampleGetMostRecentStatusCounts());
+
+                var cls = mock.Create<CPSManager>();
+                var expected = GetSampleGetMostRecentStatusCounts();
+
+                var actual = await cls.getMostRecentStatusCounts("2021-04-03");
+
+                Xunit.Assert.True(actual != null);
+                Xunit.Assert.Equal(expected.Count, actual.Count);
+                for (int i = 0; i < expected.Count; i++)
+                {
+                    Xunit.Assert.Equal(expected[i].DateOfReport, actual[i].DateOfReport);
+                    Xunit.Assert.Equal(expected[i].StatusCountAsOfDate, actual[i].StatusCountAsOfDate);
+                    Xunit.Assert.Equal(expected[i].StatusName, actual[i].StatusName);
+                }
+            }
+        }
+        private List<CPSStatus> GetSampleGetMostRecentStatusCounts()
+        {
+            List<CPSStatus> output = new List<CPSStatus>
+            {
+                new CPSStatus
+                {
+                    DateOfReport = "2021-04-03",
+                    StatusName = "Inactive",
+                    StatusCountAsOfDate = 2000,
+
+                },
+                new CPSStatus
+                {
+                    DateOfReport = "2021-04-03",
+                    StatusName = "Active",
+                    StatusCountAsOfDate = 20001,
+                },
+                new CPSStatus
+                {
+                    DateOfReport = "2021-04-03",
+                    StatusName = "Demo",
+                    StatusCountAsOfDate = 200,
+                },
+                new CPSStatus
+                {
+                    DateOfReport = "2021-04-03",
+                    StatusName = "Master",
+                    StatusCountAsOfDate = 100,
+                },
+                new CPSStatus
+                {
+                    DateOfReport = "2021-04-03",
+                    StatusName = "Suspended",
+                    StatusCountAsOfDate = 300,
+                },
+                new CPSStatus
+                {
+                    DateOfReport = "2021-04-03",
+                    StatusName = "Deleted",
+                    StatusCountAsOfDate = 500,
+                },
+                new CPSStatus
+                {
+                    DateOfReport = "2021-04-03",
+                    StatusName = "Implementation",
+                    StatusCountAsOfDate = 100,
+                },
+            };
+
+            return output;
         }
     }
 }

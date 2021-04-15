@@ -12,5 +12,7 @@ namespace PaychexDataConsolidationTool.Contracts
         Task<List<PaychexDataConsolidationTool.Entities.Type>> getTypes();
         Task<List<CPTType>> getTypeReportData(string startDate, string endDate, string typeName);
         public Task<int> CountAfterSearch(string startDate, string endDate);
+        public Task<List<CPT>> getMostRecentDate();
+        public Task<List<CPTType>> getMostRecentStatusCounts(string date);
     }
 }

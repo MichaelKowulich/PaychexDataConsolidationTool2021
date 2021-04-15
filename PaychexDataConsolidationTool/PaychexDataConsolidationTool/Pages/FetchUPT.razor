@@ -1,5 +1,5 @@
-﻿@page "/cptlist"
-@inject ICPTManager cptManager
+﻿@page "/uptlist"
+@inject IUPTManager uptManager
 @inject IJSRuntime JSRuntime
 @namespace PaychexDataConsolidationTool
 <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -44,7 +44,7 @@
         <input type="date" id="EndDate" class="padded-right" placeholder="End Date" @bind="EndDate">
     </div>
     <div class="d-flex flex-column">
-        <button type="button" class="btn btn-primary btn-block p-1" @onclick="generateCPTGraph"><i class="fa fa-search"></i>Search</button>
+        <button type="button" class="btn btn-primary btn-block p-1" @onclick="generateUPTGraph"><i class="fa fa-search"></i>Search</button>
     </div>
 </div>
 
@@ -59,18 +59,18 @@
                     Date Of Report
                     <span class="fa @(SetSortIcon("DateOfReport"))"></span>
                 </th>
-                <th class="sort-th" @onclick="@(() => SortTable("TypeName"))">
+                <th class="sort-th" @onclick="@(() => SortTable("UserTypeName"))">
                     Type
-                    <span class="fa @(SetSortIcon("TypeName"))"></span>
+                    <span class="fa @(SetSortIcon("UserTypeName"))"></span>
                 </th>
-                <th class="sort-th" @onclick="@(() => SortTable("TypeCountAsOfDate"))">
+                <th class="sort-th" @onclick="@(() => SortTable("UserTypeCountAsOfDate"))">
                     Total
-                    <span class="fa @(SetSortIcon("TypeCountAsOfDate"))"></span>
+                    <span class="fa @(SetSortIcon("UserTypeCountAsOfDate"))"></span>
                 </th>
             </tr>
         </thead>
         <tbody>
-            @if (cpttModel == null || cpttModel.Count == 0)
+            @if (upttModel == null || upttModel.Count == 0)
             {
                 <tr>
                     <td colspan="3">
@@ -80,12 +80,12 @@
             }
             else
             {
-                foreach (var cptt in cpttModel)
+                foreach (var uptt in upttModel)
                 {
                     <tr>
-                        <td>@cptt.DateOfReport</td>
-                        <td>@cptt.TypeName</td>
-                        <td>@cptt.TypeCountAsOfDate</td>
+                        <td>@uptt.DateOfReport</td>
+                        <td>@uptt.UserTypeName</td>
+                        <td>@uptt.UserTypeCountAsOfDate</td>
                     </tr>
                 }
             }
@@ -153,8 +153,8 @@
     // Values that we will use to configure our table after search
     //
 
-    List<CPTType> cpttModel;
-    CPT cptEntity = new CPT();
+    List<UPTType> upttModel;
+    UPT uptEntity = new UPT();
 
 
     #region Pagination
@@ -188,11 +188,11 @@
     // Waits for search to return, then sends flattened (serialized)
     // data over to our interop.js file
     //
-    protected async Task generateCPTGraph()
+    protected async Task generateUPTGraph()
     {
         await this.OnSearchAsync();
 
-        await JSRuntime.InvokeAsync<bool>("generateCPTGraph", json);
+        await JSRuntime.InvokeAsync<bool>("generateUPTGraph", json);
 
         await this.generateTable();
     }
@@ -208,7 +208,7 @@
         Array.Resize(ref types, 0);
 
         //Getting our range of dates, and properly putting them in the array
-        List<CPT> dateRange = await cptManager.getDates(startDate.ToString(), endDate.ToString());
+        List<UPT> dateRange = await uptManager.getDates(startDate.ToString(), endDate.ToString());
         foreach (var date in dateRange)
         {
             Array.Resize(ref dates, dates.Length + 1);
@@ -216,12 +216,12 @@
         }
 
         //Getting our types and properly putting them in the array
-        List<PaychexDataConsolidationTool.Entities.Type> Types = await cptManager.getTypes();
+        List<PaychexDataConsolidationTool.Entities.UserType> Types = await uptManager.getTypes();
         foreach (var type in Types)
         {
             Array.Resize(ref types, types.Length + 1);
-            types[types.GetUpperBound(0)] = type.TypeName.ToString();
-            Console.WriteLine(type.TypeName.ToString());
+            types[types.GetUpperBound(0)] = type.UserTypeName.ToString();
+            Console.WriteLine(type.UserTypeName.ToString());
         }
 
         //Create our graphdata object because now we know what amount of data we are working with
@@ -240,7 +240,7 @@
         int overflow = 0;
         for (int i = 0; i < types.Length; i++)
         {
-            List<CPTType> allCountsPerTypeWithinDate = await cptManager.getTypeReportData(startDate.ToString(), endDate.ToString(), types[i]);
+            List<UPTType> allCountsPerTypeWithinDate = await uptManager.getTypeReportData(startDate.ToString(), endDate.ToString(), types[i]);
             int[] CountsPerType = new int[dates.Length];
             for (int j = 0; j < dates.Length; j++)
             {
@@ -252,7 +252,7 @@
                 {
                     if (dates[j] == allCountsPerTypeWithinDate.ElementAt(overflow).DateOfReport)
                     {
-                        CountsPerType[j] = allCountsPerTypeWithinDate.ElementAt(overflow).TypeCountAsOfDate;
+                        CountsPerType[j] = allCountsPerTypeWithinDate.ElementAt(overflow).UserTypeCountAsOfDate;
                         overflow++;
                     }
                     else
@@ -278,8 +278,8 @@
         pagerSize = 3;
         pageSize = types.Length;
         curPage = 1;
-        cpttModel = await cptManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, startDate.ToString(), endDate.ToString(), sortDir);
-        totalRecords = await cptManager.Count(startDate.ToString(), endDate.ToString());
+        upttModel = await uptManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, startDate.ToString(), endDate.ToString(), sortDir);
+        totalRecords = await uptManager.Count(startDate.ToString(), endDate.ToString());
         totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
         SetPagerSize("forward");
         startPage = 1;
@@ -289,16 +289,16 @@
     //
     // Functions that sort records based on what a user selects
     //
-    private async Task<List<CPTType>> SortRecords(string columnName, string dir)
+    private async Task<List<UPTType>> SortRecords(string columnName, string dir)
     {
-        return await cptManager.ListAll((curPage - 1) * pageSize, pageSize, columnName, startDate.ToString(), endDate.ToString(), dir);
+        return await uptManager.ListAll((curPage - 1) * pageSize, pageSize, columnName, startDate.ToString(), endDate.ToString(), dir);
     }
 
     private async Task SortTable(string columnName)
     {
         if (columnName != activeSortColumn)
         {
-            cpttModel = await SortRecords(columnName, "ASC");
+            upttModel = await SortRecords(columnName, "ASC");
             isSortedAscending = true;
             activeSortColumn = columnName;
         }
@@ -306,11 +306,11 @@
         {
             if (isSortedAscending)
             {
-                cpttModel = await SortRecords(columnName, "DESC");
+                upttModel = await SortRecords(columnName, "DESC");
             }
             else
             {
-                cpttModel = await SortRecords(columnName, "ASC");
+                upttModel = await SortRecords(columnName, "ASC");
             }
 
             isSortedAscending = !isSortedAscending;
@@ -345,7 +345,7 @@
     //
     public async Task refreshRecords(int currentPage)
     {
-        cpttModel = await cptManager.ListAll((currentPage - 1) * pageSize, pageSize, sortColumnName, startDate.ToString(), endDate.ToString(), sortDir);
+        upttModel = await uptManager.ListAll((currentPage - 1) * pageSize, pageSize, sortColumnName, startDate.ToString(), endDate.ToString(), sortDir);
         curPage = currentPage;
         this.StateHasChanged();
     }

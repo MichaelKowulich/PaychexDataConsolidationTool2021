@@ -1,21 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Team Project\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj": {}
+    "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj": {}
   },
   "projects": {
-    "D:\\Team Project\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj": {
+    "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Team Project\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj",
+        "projectUniqueName": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj",
         "projectName": "PaychexDataConsolidationToolTests",
-        "projectPath": "D:\\Team Project\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj",
-        "packagesPath": "C:\\Users\\reynard\\.nuget\\packages\\",
-        "outputPath": "D:\\Team Project\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\obj\\",
+        "projectPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\PaychexDataConsolidationToolTests.csproj",
+        "packagesPath": "C:\\Users\\Mike\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationToolTests\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
+        ],
         "configFilePaths": [
-          "C:\\Users\\reynard\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Mike\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -26,9 +30,10 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "D:\\Team Project\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {
-                "projectPath": "D:\\Team Project\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj"
+              "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {
+                "projectPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj"
               }
             }
           }
@@ -41,6 +46,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "Autofac.Extras.Moq": {
               "target": "Package",
@@ -95,22 +101,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.104\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Team Project\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {
+    "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj": {
       "version": "1.0.1",
       "restore": {
-        "projectUniqueName": "D:\\Team Project\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
+        "projectUniqueName": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
         "projectName": "PaychexDataConsolidationTool",
-        "projectPath": "D:\\Team Project\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
-        "packagesPath": "C:\\Users\\reynard\\.nuget\\packages\\",
-        "outputPath": "D:\\Team Project\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\obj\\",
+        "projectPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool.csproj",
+        "packagesPath": "C:\\Users\\Mike\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Mike\\Desktop\\PaychexDataConsolidationTool2021\\PaychexDataConsolidationTool\\PaychexDataConsolidationTool\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
+        ],
         "configFilePaths": [
-          "C:\\Users\\reynard\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Mike\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -121,6 +131,7 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -132,6 +143,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "ChartJs.Blazor.Fork": {
               "target": "Package",
@@ -184,6 +196,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[3.1.13, 3.1.13]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -192,7 +210,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.104\\RuntimeIdentifierGraph.json"
         }
       }
     }

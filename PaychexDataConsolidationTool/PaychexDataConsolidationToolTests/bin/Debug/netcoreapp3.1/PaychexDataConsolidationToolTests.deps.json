@@ -14,12 +14,59 @@
           "Microsoft.NET.Test.Sdk": "16.5.0",
           "Moq": "4.16.1",
           "PaychexDataConsolidationTool": "1.0.1",
+          "bunit": "1.0.19",
           "coverlet.collector": "1.2.0",
           "xunit": "2.4.1",
           "xunit.runner.visualstudio": "2.4.3"
         },
         "runtime": {
           "PaychexDataConsolidationToolTests.dll": {}
+        }
+      },
+      "AngleSharp/0.14.0": {
+        "dependencies": {
+          "System.Text.Encoding.CodePages": "4.5.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/AngleSharp.dll": {
+            "assemblyVersion": "0.14.0.0",
+            "fileVersion": "0.14.0.0"
+          }
+        }
+      },
+      "AngleSharp.Css/0.14.2": {
+        "dependencies": {
+          "AngleSharp": "0.14.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/AngleSharp.Css.dll": {
+            "assemblyVersion": "0.14.2.0",
+            "fileVersion": "0.14.2.0"
+          }
+        }
+      },
+      "AngleSharp.Diffing/0.14.0": {
+        "dependencies": {
+          "AngleSharp": "0.14.0",
+          "AngleSharp.Css": "0.14.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/AngleSharp.Diffing.dll": {
+            "assemblyVersion": "0.14.0.0",
+            "fileVersion": "0.14.0.0"
+          }
+        }
+      },
+      "AngleSharp.Wrappers/1.2.0": {
+        "dependencies": {
+          "AngleSharp": "0.14.0",
+          "AngleSharp.Css": "0.14.2"
+        },
+        "runtime": {
+          "lib/netstandard2.1/AngleSharpWrappers.dll": {
+            "assemblyVersion": "1.2.0.0",
+            "fileVersion": "1.2.0.0"
+          }
         }
       },
       "Autofac/6.0.0": {
@@ -43,6 +90,48 @@
           "lib/netstandard2.1/Autofac.Extras.Moq.dll": {
             "assemblyVersion": "6.0.0.0",
             "fileVersion": "6.0.0.0"
+          }
+        }
+      },
+      "bunit/1.0.19": {
+        "dependencies": {
+          "bunit.core": "1.0.19",
+          "bunit.web": "1.0.19"
+        }
+      },
+      "bunit.core/1.0.19": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components": "3.1.8",
+          "Microsoft.AspNetCore.Components.Authorization": "3.1.1",
+          "Microsoft.AspNetCore.Components.Web": "3.1.8",
+          "Microsoft.Extensions.Logging": "3.1.3",
+          "Microsoft.Extensions.Logging.Abstractions": "3.1.8"
+        },
+        "runtime": {
+          "lib/netstandard2.1/Bunit.Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.19.24442"
+          }
+        }
+      },
+      "bunit.web/1.0.19": {
+        "dependencies": {
+          "AngleSharp": "0.14.0",
+          "AngleSharp.Css": "0.14.2",
+          "AngleSharp.Diffing": "0.14.0",
+          "AngleSharp.Wrappers": "1.2.0",
+          "Microsoft.AspNetCore.Components": "3.1.8",
+          "Microsoft.AspNetCore.Components.Authorization": "3.1.1",
+          "Microsoft.AspNetCore.Components.Web": "3.1.8",
+          "Microsoft.Extensions.Localization.Abstractions": "3.1.1",
+          "Microsoft.Extensions.Logging": "3.1.3",
+          "Microsoft.Extensions.Logging.Abstractions": "3.1.8",
+          "bunit.core": "1.0.19"
+        },
+        "runtime": {
+          "lib/netstandard2.1/Bunit.Web.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.19.24442"
           }
         }
       },
@@ -118,6 +207,18 @@
         }
       },
       "Microsoft.AspNetCore.Components.Analyzers/3.1.8": {},
+      "Microsoft.AspNetCore.Components.Authorization/3.1.1": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Authorization": "3.1.8",
+          "Microsoft.AspNetCore.Components": "3.1.8"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Microsoft.AspNetCore.Components.Authorization.dll": {
+            "assemblyVersion": "3.1.1.0",
+            "fileVersion": "3.100.119.61510"
+          }
+        }
+      },
       "Microsoft.AspNetCore.Components.Forms/3.1.8": {
         "dependencies": {
           "Microsoft.AspNetCore.Components": "3.1.8"
@@ -613,6 +714,14 @@
           "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
             "assemblyVersion": "3.1.8.0",
             "fileVersion": "3.100.820.42004"
+          }
+        }
+      },
+      "Microsoft.Extensions.Localization.Abstractions/3.1.1": {
+        "runtime": {
+          "lib/netcoreapp3.1/Microsoft.Extensions.Localization.Abstractions.dll": {
+            "assemblyVersion": "3.1.1.0",
+            "fileVersion": "3.100.119.61404"
           }
         }
       },
@@ -1920,7 +2029,8 @@
           "Microsoft.EntityFrameworkCore.SqlServer.Design": "1.1.6",
           "Microsoft.Extensions.Logging.Debug": "3.0.0",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "3.0.0",
-          "NUnit": "3.12.0"
+          "NUnit": "3.12.0",
+          "bunit": "1.0.19"
         },
         "runtime": {
           "PaychexDataConsolidationTool.dll": {}
@@ -1933,6 +2043,34 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "AngleSharp/0.14.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-34w9I7nyszfEYBY8g7T3B0AtWlOivNh+QoWc3KECRwbmcNyqWmb4huihtmpH2Ds7rIRRHMMPv9yfPBxxjBn03g==",
+      "path": "anglesharp/0.14.0",
+      "hashPath": "anglesharp.0.14.0.nupkg.sha512"
+    },
+    "AngleSharp.Css/0.14.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2USpPu9V/+1iBwHpanBsqr1eR+3vxKe19ZsnejbZfxNOadsMvUUkJ+0OjMsQmT0ExSW4vjCKXq9K/JWv0ie8JQ==",
+      "path": "anglesharp.css/0.14.2",
+      "hashPath": "anglesharp.css.0.14.2.nupkg.sha512"
+    },
+    "AngleSharp.Diffing/0.14.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-mmhvjKSJGkJPQ0iMmf49Kq83bdiZrhrZms5sWbM4JOSxIbzmXA5hnPIO/buRdZPlGTHTdh6BHGPHWPQLjV4jrw==",
+      "path": "anglesharp.diffing/0.14.0",
+      "hashPath": "anglesharp.diffing.0.14.0.nupkg.sha512"
+    },
+    "AngleSharp.Wrappers/1.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9rSNLn1iFnKEd1DS9Slug5Hjczo6w7RhEhYntNEQPeMrTBX4vpAOCFFNNmiBwqvN0gkJdUsPPpEQPU4e6dQ6zQ==",
+      "path": "anglesharp.wrappers/1.2.0",
+      "hashPath": "anglesharp.wrappers.1.2.0.nupkg.sha512"
     },
     "Autofac/6.0.0": {
       "type": "package",
@@ -1947,6 +2085,27 @@
       "sha512": "sha512-jssPHhCWlOL23LRXRvXkrOC86y0VA2tzqwv3DVLvkBO+DGWI3mOTwGdRuCeXnYzQPYF0o9X5SZLwV+fj4x8u7w==",
       "path": "autofac.extras.moq/6.0.0",
       "hashPath": "autofac.extras.moq.6.0.0.nupkg.sha512"
+    },
+    "bunit/1.0.19": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kRagiAPKvom0HDpUylVNlPbhjsSveZdXn7x/CjCOVX47T9Tys24Anu+YFqmUI+ouqtaOT3UAZXo2XR+ekZJGMg==",
+      "path": "bunit/1.0.19",
+      "hashPath": "bunit.1.0.19.nupkg.sha512"
+    },
+    "bunit.core/1.0.19": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CvsWQD7eIGceyO+SF9oT4nmFUFi86/n9f58FLGmQeOvuzlPkU2QMFt3KrKfWwXpozBUIJ+01CCQCOp8W/nZOIg==",
+      "path": "bunit.core/1.0.19",
+      "hashPath": "bunit.core.1.0.19.nupkg.sha512"
+    },
+    "bunit.web/1.0.19": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-P4uYlNhUIDNI8eTgzCMZ5BdHIlMljAFWPWjpHXD1X9F8MABGIoRZL8SXzbMtRfnZ7nN/jkMDMzGiA8hR0+aSOg==",
+      "path": "bunit.web/1.0.19",
+      "hashPath": "bunit.web.1.0.19.nupkg.sha512"
     },
     "Castle.Core/4.4.0": {
       "type": "package",
@@ -1996,6 +2155,13 @@
       "sha512": "sha512-ODBBAHa7Kxk85HHf/En3ZYw+oGPb+oosb30PZrrB1gGqDo/qtleHLfdR2XsjOdRyZujesOMX0c/FU0t3hyXRpA==",
       "path": "microsoft.aspnetcore.components.analyzers/3.1.8",
       "hashPath": "microsoft.aspnetcore.components.analyzers.3.1.8.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.Authorization/3.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RDVsyGzyN0eEnlTEjqKepN2AzB0djXm5fE9zs3bc2ag8H3N7d2xtCcyCQlqrzrZjCE7BV66Jorg2OX57Cj74WQ==",
+      "path": "microsoft.aspnetcore.components.authorization/3.1.1",
+      "hashPath": "microsoft.aspnetcore.components.authorization.3.1.1.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Components.Forms/3.1.8": {
       "type": "package",
@@ -2220,6 +2386,13 @@
       "sha512": "sha512-YP0kEBkSLTVl3znqZEux+xyJpz5iVNwFZf0OPS7nupdKbojSlO7Fa+JuQjLYpWfpAshaMcznu27tjWzfXRJnOA==",
       "path": "microsoft.extensions.dependencyinjection.abstractions/3.1.8",
       "hashPath": "microsoft.extensions.dependencyinjection.abstractions.3.1.8.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Localization.Abstractions/3.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Iuvt8NAqoPgnHRi1PekARWBd7MSASLLqcKs7nusWqflsnLp9Q7c2rBck4/lCTU3Za1pBBnpmBHKzV3NacGu/RQ==",
+      "path": "microsoft.extensions.localization.abstractions/3.1.1",
+      "hashPath": "microsoft.extensions.localization.abstractions.3.1.1.nupkg.sha512"
     },
     "Microsoft.Extensions.Logging/3.1.3": {
       "type": "package",

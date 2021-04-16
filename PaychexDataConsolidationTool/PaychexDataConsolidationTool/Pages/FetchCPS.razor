@@ -133,15 +133,15 @@
     //
     // Values that we have bound to input elements of this razor file
     //
-    private DateTime startDate = DateTime.Now;
-    private DateTime StartDate
+    public DateTime startDate = DateTime.Now;
+    public DateTime StartDate
     {
         get { return startDate; }
         set { startDate = value; }
     }
 
-    protected DateTime endDate = DateTime.Now;
-    protected DateTime EndDate
+    public DateTime endDate = DateTime.Now;
+    public DateTime EndDate
     {
         get { return endDate; }
         set { endDate = value; }

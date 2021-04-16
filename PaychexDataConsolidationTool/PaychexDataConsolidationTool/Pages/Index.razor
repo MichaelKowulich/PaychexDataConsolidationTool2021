@@ -36,29 +36,171 @@
         border-radius: 3px;
         overflow: auto;
     }
+
+    .tables {
+        width: 600px;
+        position: relative;
+        margin-right: 50px;
+        margin-top: 50px;
+        margin-bottom: 50px;
+        margin-left: 50px;
+        display: inline-block;
+        background: white;
+        padding: 5px;
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        border-radius: 3px;
+        overflow: auto;
+        float: right;
+        top: 50px;
+    }
+
 </style>
+
+<div class="tables">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                Clients per Status
+                <th class="sort-th">
+                    Status
+                    <span class="fa "></span>
+                </th>
+                <th class="sort-th">
+                    Total
+                    <span class="fa "></span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Master</td>
+                <td>100</td>
+            </tr>
+            <tr>
+                <td>Demo</td>
+                <td>1900</td>
+            </tr>
+            <tr>
+                <td>Active</td>
+                <td>19190</td>
+            </tr>
+            <tr>
+                <td>Inactive</td>
+                <td>2000</td>
+            </tr>
+            <tr>
+                <td>Suspended</td>
+                <td>139</td>
+            </tr>
+            <tr>
+                <td>Deleted</td>
+                <td>200</td>
+            </tr>
+            <tr>
+                <td>Implementation</td>
+                <td>341</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            Clients per Type
+            <tr>
+                <th class="sort-th">
+                    Type
+                    <span class="fa "></span>
+                </th>
+                <th class="sort-th">
+                    Total
+                    <span class="fa "></span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Essentials</td>
+                <td>3100</td>
+            </tr>
+            <tr>
+                <td>FlexTime</td>
+                <td>31900</td>
+            </tr>
+            <tr>
+                <td>Nettime Organic</td>
+                <td>100</td>
+            </tr>
+            <tr>
+                <td>Standalone</td>
+                <td>2000</td>
+            </tr>
+            <tr>
+                <td>C2C All</td>
+                <td>239</td>
+            </tr>
+            <tr>
+                <td>StratusTime Integrated</td>
+                <td>8200</td>
+            </tr>
+            <tr>
+                <td>C2C Clients with same FEIN</td>
+                <td>40341</td>
+            </tr>
+            <tr>
+                <td>C2C Clients with different FEIN</td>
+                <td>395</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            Users per Type
+            <tr>
+                <th class="sort-th">
+                    Type
+                    <span class="fa "></span>
+                </th>
+                <th class="sort-th">
+                    Total
+                    <span class="fa "></span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Flex</td>
+                <td>4019999</td>
+            </tr>
+            <tr>
+                <td>Stretch</td>
+                <td>100</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <h1> Paychex Data Consolidation Tool</h1>
 @foreach (var entity in Entities)
 {
-    <h2> @entity Overview: </h2>
+    <h2 class="headers"> @entity Overview: </h2>
     <div class="chartBox">
         <canvas id="@entity"></canvas>
     </div>
 }
 
 @code {
-        string[] Entities = { "Status", "Type", "User" };
+    string[] Entities = { "Status", "Type", "User" };
 
-        string[] statuses = new string[0];
-        int[] statusData = new int[0];
-        string StatusJson;
-        string[] types = new string[0];
-        int[] typeData = new int[0];
-        string TypeJson;
-        string[] users = new string[0];
-        int[] userData = new int[0];
-        string UserJson;
+    string[] statuses = new string[0];
+    int[] statusData = new int[0];
+    string StatusJson;
+    string[] types = new string[0];
+    int[] typeData = new int[0];
+    string TypeJson;
+    string[] users = new string[0];
+    int[] userData = new int[0];
+    string UserJson;
 
 
     protected override async Task OnInitializedAsync()

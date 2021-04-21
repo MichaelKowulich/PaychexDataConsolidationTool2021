@@ -303,7 +303,7 @@ function generateUPTGraph(graphdata) {
                     fontSize: 20
                 }
             }]
-        }
+        },
     };
 
     // Chart declaration (creating the chart with our data and options objects)
@@ -355,6 +355,10 @@ function generatePiChart(graphdata) {
                 backgroundColor: colors,
                 borderWidth: 1,
             }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
         }
     })
         return true;

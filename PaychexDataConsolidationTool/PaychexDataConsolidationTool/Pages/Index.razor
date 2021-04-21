@@ -22,11 +22,14 @@
 
     .float-child {
         width: 50%;
-        height: 100%;
         float: left;
         background: white;
+        display: inline-block;
         padding: 5px;
-        border-radius: 3px;
+    }
+
+    .wrapper {
+        height: 400px !important;
     }
 </style>
 <h1> Paychex Data Consolidation Tool </h1>
@@ -35,7 +38,9 @@
 <div class="float-container">
     <h2 class="headers"> @entity Overview: </h2>
     <div class="float-child">
-        <canvas id="@entity"></canvas>
+        <div class="wrapper">
+            <canvas width="300" height="150" id="@entity"></canvas>
+        </div>
     </div>
     <div class="float-child">
         <table class="table table-bordered table-hover">

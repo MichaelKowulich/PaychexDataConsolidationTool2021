@@ -16,181 +16,91 @@
         margin: 0px 5px 0px 5px;
     }
 
-    .centerpiece {
-        width: 100%;
-        height: 400px;
-        color: white;
-        text-align: center;
-        padding-bottom: 15px;
-        padding-top: 15px;
+    .float-container {
+        padding: 20px;
     }
 
-    .chartBox {
-        width: 600px;
-        position: relative;
-        margin: 20px;
-        display: inline-block;
+    .float-child {
+        width: 50%;
+        height: 100%;
+        float: left;
         background: white;
         padding: 5px;
-        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
         border-radius: 3px;
-        overflow: auto;
     }
-
-    .tables {
-        width: 600px;
-        position: relative;
-        margin-right: 50px;
-        margin-top: 50px;
-        margin-bottom: 50px;
-        margin-left: 50px;
-        display: inline-block;
-        background: white;
-        padding: 5px;
-        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-        border-radius: 3px;
-        overflow: auto;
-        float: right;
-        top: 50px;
-    }
-
 </style>
-
-<div class="tables">
-    <table class="table table-bordered table-hover">
-        <thead>
-            <tr>
-                Clients per Status
-                <th class="sort-th">
-                    Status
-                    <span class="fa "></span>
-                </th>
-                <th class="sort-th">
-                    Total
-                    <span class="fa "></span>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Master</td>
-                <td>100</td>
-            </tr>
-            <tr>
-                <td>Demo</td>
-                <td>1900</td>
-            </tr>
-            <tr>
-                <td>Active</td>
-                <td>19190</td>
-            </tr>
-            <tr>
-                <td>Inactive</td>
-                <td>2000</td>
-            </tr>
-            <tr>
-                <td>Suspended</td>
-                <td>139</td>
-            </tr>
-            <tr>
-                <td>Deleted</td>
-                <td>200</td>
-            </tr>
-            <tr>
-                <td>Implementation</td>
-                <td>341</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <table class="table table-bordered table-hover">
-        <thead>
-            Clients per Type
-            <tr>
-                <th class="sort-th">
-                    Type
-                    <span class="fa "></span>
-                </th>
-                <th class="sort-th">
-                    Total
-                    <span class="fa "></span>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Essentials</td>
-                <td>3100</td>
-            </tr>
-            <tr>
-                <td>FlexTime</td>
-                <td>31900</td>
-            </tr>
-            <tr>
-                <td>Nettime Organic</td>
-                <td>100</td>
-            </tr>
-            <tr>
-                <td>Standalone</td>
-                <td>2000</td>
-            </tr>
-            <tr>
-                <td>C2C All</td>
-                <td>239</td>
-            </tr>
-            <tr>
-                <td>StratusTime Integrated</td>
-                <td>8200</td>
-            </tr>
-            <tr>
-                <td>C2C Clients with same FEIN</td>
-                <td>40341</td>
-            </tr>
-            <tr>
-                <td>C2C Clients with different FEIN</td>
-                <td>395</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <table class="table table-bordered table-hover">
-        <thead>
-            Users per Type
-            <tr>
-                <th class="sort-th">
-                    Type
-                    <span class="fa "></span>
-                </th>
-                <th class="sort-th">
-                    Total
-                    <span class="fa "></span>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Flex</td>
-                <td>4019999</td>
-            </tr>
-            <tr>
-                <td>Stretch</td>
-                <td>100</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<h1> Paychex Data Consolidation Tool</h1>
+<h1> Paychex Data Consolidation Tool </h1>
 @foreach (var entity in Entities)
 {
+<div class="float-container">
     <h2 class="headers"> @entity Overview: </h2>
-    <div class="chartBox">
+    <div class="float-child">
         <canvas id="@entity"></canvas>
     </div>
+    <div class="float-child">
+        <table class="table table-bordered table-hover">
+            <thead>
+                @entity
+                <tr>
+                    @if (entity == "Clients Per Type" || entity == "Users Per Type")
+                    {
+                        <th class="sort-th">
+                            Type
+                            <span class="fa "></span>
+                        </th>
+                    }
+                    else if (entity == "Clients Per Status")
+                    {
+                        <th class="sort-th">
+                            Status
+                            <span class="fa "></span>
+                        </th>
+                    }
+                    <th class="sort-th">
+                        Total
+                        <span class="fa "></span>
+                    </th>
+                </tr>
+                @if (entity == "Clients Per Status")
+                {
+                    foreach (var cpss in MostRecentCPSData)
+                    {
+                        <tr>
+                            <td> @cpss.StatusName</td>
+                            <td> @cpss.StatusCountAsOfDate</td>
+                        </tr>
+                    }
+                }
+                else if (entity == "Clients Per Type")
+                {
+                    foreach (var cptt in MostRecentCPTData)
+                    {
+                        <tr>
+                            <td> @cptt.TypeName</td>
+                            <td> @cptt.TypeCountAsOfDate</td>
+                        </tr>
+                    }
+                }
+                else if (entity == "Users Per Type")
+                {
+                    foreach (var uptt in MostRecentUPTData)
+                    {
+                        <tr>
+                            <td> @uptt.UserTypeName</td>
+                            <td> @uptt.UserTypeCountAsOfDate</td>
+                        </tr>
+                    }
+                }
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
 }
 
 @code {
-    string[] Entities = { "Status", "Type", "User" };
+    string[] Entities = { "Clients Per Status", "Clients Per Type", "Users Per Type" };
 
     string[] statuses = new string[0];
     int[] statusData = new int[0];
@@ -202,10 +112,36 @@
     int[] userData = new int[0];
     string UserJson;
 
+    List<CPS> MostRecentCPSDate;
+    string mostRecentCPSDate;
+    List<CPSStatus> MostRecentCPSData;
+
+    List<CPT> MostRecentCPTDate;
+    string mostRecentCPTDate;
+    List<CPTType> MostRecentCPTData;
+
+    List<UPT> MostRecentUPTDate;
+    string mostRecentUPTDate;
+    List<UPTType> MostRecentUPTData;
 
     protected override async Task OnInitializedAsync()
     {
-        await generatePiGraphs();
+        //Clients Per Status
+        MostRecentCPSDate = await cpsManager.getMostRecentDate();
+        mostRecentCPSDate = MostRecentCPSDate.ElementAt(0).DateOfReport;
+        MostRecentCPSData = await cpsManager.getMostRecentStatusCounts(mostRecentCPSDate);
+
+        //Clients Per Type
+        MostRecentCPTDate = await cptManager.getMostRecentDate();
+        mostRecentCPTDate = MostRecentCPTDate.ElementAt(0).DateOfReport;
+        MostRecentCPTData = await cptManager.getMostRecentStatusCounts(mostRecentCPTDate);
+
+        //Users Per Type
+        MostRecentUPTDate = await uptManager.getMostRecentDate();
+        mostRecentUPTDate = MostRecentUPTDate.ElementAt(0).DateOfReport;
+        MostRecentUPTData = await uptManager.getMostRecentTypeCounts(mostRecentUPTDate);
+
+        generatePiGraphs();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -229,12 +165,9 @@
         }
     }
 
-    protected async Task generatePiGraphs()
+    protected void generatePiGraphs()
     {
         //Clients Per Status
-        List<CPS> MostRecentCPSDate = await cpsManager.getMostRecentDate();
-        string mostRecentCPSDate = MostRecentCPSDate.ElementAt(0).DateOfReport;
-        List<CPSStatus> MostRecentCPSData = await cpsManager.getMostRecentStatusCounts(mostRecentCPSDate);
         foreach (var cps in MostRecentCPSData)
         {
             Array.Resize(ref statuses, statuses.Length + 1);
@@ -242,13 +175,10 @@
             Array.Resize(ref statusData, statusData.Length + 1);
             statusData[statusData.GetUpperBound(0)] = cps.StatusCountAsOfDate;
         }
-        GraphData ClientsPerStatusData = new GraphData("Status", statuses, statusData);
+        GraphData ClientsPerStatusData = new GraphData("Clients Per Status", statuses, statusData);
         StatusJson = Newtonsoft.Json.JsonConvert.SerializeObject(ClientsPerStatusData);
 
         //Clients Per Type
-        List<CPT> MostRecentCPTDate = await cptManager.getMostRecentDate();
-        string mostRecentCPTDate = MostRecentCPTDate.ElementAt(0).DateOfReport;
-        List<CPTType> MostRecentCPTData = await cptManager.getMostRecentStatusCounts(mostRecentCPTDate);
         foreach (var cpt in MostRecentCPTData)
         {
             Array.Resize(ref types, types.Length + 1);
@@ -256,13 +186,10 @@
             Array.Resize(ref typeData, typeData.Length + 1);
             typeData[typeData.GetUpperBound(0)] = cpt.TypeCountAsOfDate;
         }
-        GraphData ClientsPerTypeData = new GraphData("Type", types, typeData);
+        GraphData ClientsPerTypeData = new GraphData("Clients Per Type", types, typeData);
         TypeJson = Newtonsoft.Json.JsonConvert.SerializeObject(ClientsPerTypeData);
 
         //Users Per Type
-        List<UPT> MostRecentUPTDate = await uptManager.getMostRecentDate();
-        string mostRecentUPTDate = MostRecentUPTDate.ElementAt(0).DateOfReport;
-        List<UPTType> MostRecentUPTData = await uptManager.getMostRecentTypeCounts(mostRecentUPTDate);
         foreach (var upt in MostRecentUPTData)
         {
             Array.Resize(ref users, users.Length + 1);
@@ -270,7 +197,7 @@
             Array.Resize(ref userData, userData.Length + 1);
             userData[userData.GetUpperBound(0)] = upt.UserTypeCountAsOfDate;
         }
-        GraphData UsersPerTypeData = new GraphData("User", users, userData);
+        GraphData UsersPerTypeData = new GraphData("Users Per Type", users, userData);
         UserJson = Newtonsoft.Json.JsonConvert.SerializeObject(UsersPerTypeData);
     }
 }

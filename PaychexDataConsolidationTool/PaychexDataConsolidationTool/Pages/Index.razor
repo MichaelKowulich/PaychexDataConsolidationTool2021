@@ -34,14 +34,24 @@
 
 </style>
 <h1> Paychex Data Consolidation Tool</h1>
-<br />
-<h2> Most Recent Report Date: @mostRecentCPSDate </h2>
-<br />
 
 @foreach (var entity in Entities)
 {
 <div class="float-container">
-    <h2 class="headers"> @entity Overview: </h2>
+    <h2 class="headers">
+        @entity Overview (@switch (entity)
+        {
+            case "Clients Per Status":
+                @mostRecentCPSDate
+                break;
+            case "Clients Per Type":
+                @mostRecentCPTDate
+                break;
+            case "Users Per Type":
+                @mostRecentUPTDate
+                break;
+        }):
+    </h2> 
     <div class="float-child">
         <div class="wrapper">
             <canvas width="300" height="150" id="@entity"></canvas>

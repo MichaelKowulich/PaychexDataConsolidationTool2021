@@ -29,9 +29,9 @@ namespace PaychexDataConsolidationTool.Concrete
             return totCPBB;
         }
 
-        public Task<List<CPBBrand>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string countTypeName, string direction = "DESC", string search = "")
+        public Task<List<CPBCountTypeBrand>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string countTypeName, string direction = "DESC", string search = "")
         {
-            var cpbb = Task.FromResult(_dapperManager.GetAll<CPBBrand>
+            var cpbb = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>
                 ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName as BrandName, " + "" +
                 $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName as ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate as CountAsOfDate " +
                 $"from[dbo].[ClientsPerBrand] " +
@@ -72,9 +72,9 @@ namespace PaychexDataConsolidationTool.Concrete
                 ($"SELECT ClientsPerBrandCountTypeName FROM [dbo].[ClientsPerBrandCountType] ORDER BY ClientsPerBrandCountTypeId ASC", null, commandType: CommandType.Text));
             return cpbb;
         }
-        public Task<List<CPBBrand>> getBrandReportData(string startDate, string endDate, string brandName, string countTypeName)
+        public Task<List<CPBCountTypeBrand>> getBrandReportData(string startDate, string endDate, string brandName, string countTypeName)
         {
-            var cpbb = Task.FromResult(_dapperManager.GetAll<CPBBrand>
+            var cpbb = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>
                 ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName, " + 
                 $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate " +
                 $"FROM [dbo].[ClientsPerBrand] " +
@@ -97,17 +97,16 @@ namespace PaychexDataConsolidationTool.Concrete
 
         // Ian: FetchCPB doesn't use this method so I haven't implemented it yet but this 
         // is how I figured the method should be written for use on the home page.
-        public Task<List<CPBBrand>> getMostRecentBrandCountsOfType(string date, string countTypeName)
+        public Task<List<CPBCountTypeBrand>> getMostRecentBrandCountsOfType(string date)
         {
-            var cpss = Task.FromResult(_dapperManager.GetAll<CPBBrand>
+            var cpss = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>
                 ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName as ClientBrandName, " + "" +
                 $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName as ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate as CountAsOfDate " +
                 $"FROM [dbo].[ClientsPerBrand] " +
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +
                 $"INNER JOIN [dbo].[ClientsPerBrandCountType] ON [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeId = [dbo].[ClientsPerBrand].ClientsPerBrandCountTypeId " +
                 $"WHERE DateOfReport = '{date}' " +
-                $"AND ClientsPerBrandCountTypeName = '{countTypeName}' " +
-                $"ORDER BY [dbo].[ClientBrand].ClientBrandId", null, commandType: CommandType.Text));
+                $"ORDER BY [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName,[dbo].[ClientBrand].ClientBrandId ASC", null, commandType: CommandType.Text));
             return cpss;
         }
 

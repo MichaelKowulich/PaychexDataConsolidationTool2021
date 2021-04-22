@@ -6,16 +6,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PaychexDataConsolidationTool.Entities
 {
-    public class CPBBrand
+    public class CPBCountTypeBrand
     {
         [Key]
-        public int ClientPerBrandId { get; set; }
+        public int ClientsPerBrandId { get; set; }
 
         public string DateOfReport { get; set; }
 
-        public int BrandId { get; set; }
+        public int ClientBrandId { get; set; }
 
-        public string BrandName { get; set; }
+        public string ClientBrandName { get; set; }
         
         public int ClientsPerBrandCountTypeId { get; set; }
 

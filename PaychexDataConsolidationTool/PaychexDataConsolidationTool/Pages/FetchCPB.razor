@@ -98,7 +98,7 @@
                 {
                     <tr>
                         <td>@cpbb.DateOfReport</td>
-                        <td>@cpbb.BrandName</td>
+                        <td>@cpbb.ClientBrandName</td>
                         <td>@cpbb.CountAsOfDate</td>
                     </tr>
                 }
@@ -180,7 +180,7 @@
     // Values that we will use to configure our table after search
     //
 
-    List<CPBBrand> cpbbModel;
+    List<CPBCountTypeBrand> cpbbModel;
     CPB cpbEntity = new CPB();
 
 
@@ -279,7 +279,7 @@
         int overflow = 0;
         for (int i = 0; i < brands.Length; i++)
         {
-            List<CPBBrand> allCountsPerBrandWithinDate = await cpbManager.getBrandReportData(startDate.ToString(), endDate.ToString(), brands[i], countType);
+            List<CPBCountTypeBrand> allCountsPerBrandWithinDate = await cpbManager.getBrandReportData(startDate.ToString(), endDate.ToString(), brands[i], countType);
             int[] CountsPerBrand = new int[dates.Length];
             for (int j = 0; j < dates.Length; j++)
             {
@@ -328,7 +328,7 @@
     //
     // Functions that sort records based on what a user selects
     //
-    private async Task<List<CPBBrand>> SortRecords(string columnName, string dir)
+    private async Task<List<CPBCountTypeBrand>> SortRecords(string columnName, string dir)
     {
         return await cpbManager.ListAll((curPage - 1) * pageSize, pageSize, columnName, startDate.ToString(), endDate.ToString(), countType, dir);
     }

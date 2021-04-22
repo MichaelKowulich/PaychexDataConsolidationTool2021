@@ -325,14 +325,13 @@ function generateUPTGraph(graphdata) {
 }
 
 //--HOME PAGE PI CHART GENERATION
-function generatePiChart(graphdata) {
+function generatePieChart(graphdata) {
     graphdata = JSON.parse(graphdata);
     console.dir(graphdata);
     var canvas = document.getElementById(graphdata.EntityName); // Referencing the ID of the <canvas> tag in our razor file
     var ctx = canvas.getContext('2d'); // This is a 2d graph
     //Default font options
     Chart.defaults.global.defaultFontColor = 'black';
-    Chart.defaults.global.defaultFontSize = 16;
     var i = 0;
     var colors = [];
     graphdata.AllEntityNames.forEach(() => {
@@ -362,4 +361,58 @@ function generatePiChart(graphdata) {
         }
     })
         return true;
+}
+
+//--HOME PAGE PI CHART GENERATION
+function generateBrandPieChart(graphdata) {
+    graphdata = JSON.parse(graphdata);
+    console.dir(graphdata);
+    var canvas = document.getElementById(graphdata.EntityName); // Referencing the ID of the <canvas> tag in our razor file
+    var ctx = canvas.getContext('2d'); // This is a 2d graph
+    //Default font options
+    Chart.defaults.global.defaultFontColor = 'black';
+
+    var data = {
+        labels: graphdata.AllBrands,
+        datasets: []
+    };
+    var colors = [];
+    for (let i = 0; i < graphdata.AllBrands.length; i++) {
+        let randomBetween = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+        let r = randomBetween(0, 255);
+        let g = randomBetween(0, 255);
+        let b = randomBetween(0, 255);
+        let rgb = `rgb(${r},${g},${b})`;
+        colors[i] = rgb;
+    }
+    var j = 0;
+    graphdata.AllCountTypes.forEach(CountType => {
+        console.log(CountType);
+        let obj = {
+            label: CountType,
+            data: graphdata.BrandData[j],
+            backgroundColor: colors,
+        }
+        data.datasets.push(obj);
+        j++;
+    });
+
+    var myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            tooltips: {
+                callbacks: {
+                    label: function (item, data) {
+
+                        return data.datasets[item.datasetIndex].label
+                            + ": " + data.datasets[item.datasetIndex].data[item.index];
+                    }
+                }
+            }
+        }
+    })
+    return true;
 }

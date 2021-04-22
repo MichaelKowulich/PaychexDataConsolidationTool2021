@@ -2,6 +2,7 @@
 @inject ICPSManager cpsManager
 @inject ICPTManager cptManager
 @inject IUPTManager uptManager
+@inject ICPBManager cpbManager
 @inject IJSRuntime JSRuntime
 @namespace PaychexDataConsolidationTool
 <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -17,132 +18,168 @@
     }
 
     .float-container {
-        padding: 20px;
+        padding: 10px;
+        width: 100%;
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        display: inline-block;
     }
 
     .float-child {
         width: 50%;
         float: left;
         background: white;
-        display: inline-block;
         padding: 5px;
     }
 
     .wrapper {
         height: 400px !important;
     }
-
 </style>
 <h1> Paychex Data Consolidation Tool</h1>
-
 @foreach (var entity in Entities)
 {
-<div class="float-container">
-    <h2 class="headers">
-        @entity Overview (@switch (entity)
-        {
-            case "Clients Per Status":
-                @mostRecentCPSDate
-                break;
-            case "Clients Per Type":
-                @mostRecentCPTDate
-                break;
-            case "Users Per Type":
-                @mostRecentUPTDate
-                break;
-        }):
-    </h2> 
-    <div class="float-child">
-        <div class="wrapper">
-            <canvas width="300" height="150" id="@entity"></canvas>
+    <div class="float-container">
+        <h2 class="headers">
+            @entity Overview (@switch (entity)
+            {
+                case "Clients Per Status":
+                    @mostRecentCPSDate
+                    break;
+                case "Clients Per Type":
+                    @mostRecentCPTDate
+                    break;
+                case "Users Per Type":
+                    @mostRecentUPTDate
+                    break;
+                case "Clients Per Brand":
+                    @mostRecentCPBDate
+                    break;
+            }):
+        </h2>
+        <div class="float-child">
+            <div class="wrapper">
+                <canvas width="300" height="150" id="@entity"></canvas>
+            </div>
+        </div>
+        <div class="float-child">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    @entity
+                    <tr>
+                        @if (entity == "Clients Per Type" || entity == "Users Per Type")
+                        {
+                            <th class="sort-th">
+                                Type
+                                <span class="fa "></span>
+                            </th>
+                        }
+                        else if (entity == "Clients Per Status")
+                        {
+                            <th class="sort-th">
+                                Status
+                                <span class="fa "></span>
+                            </th>
+                        }
+                        else if (entity == "Clients Per Brand")
+                        {
+                            <th class="sort-th">
+                                Brand
+                                <span class="fa "></span>
+                            </th>
+                            <th class="sort-th">
+                                Count Type
+                                <span class="fa "></span>
+                            </th>
+                        }
+                        <th class="sort-th">
+                            Total
+                            <span class="fa "></span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (entity == "Clients Per Status")
+                    {
+                        foreach (var cpss in MostRecentCPSData)
+                        {
+                            <tr>
+                                <td> @cpss.StatusName</td>
+                                <td> @cpss.StatusCountAsOfDate</td>
+                            </tr>
+                        }
+                    }
+                    else if (entity == "Clients Per Type")
+                    {
+                        foreach (var cptt in MostRecentCPTData)
+                        {
+                            <tr>
+                                <td> @cptt.TypeName</td>
+                                <td> @cptt.TypeCountAsOfDate</td>
+                            </tr>
+                        }
+                    }
+                    else if (entity == "Users Per Type")
+                    {
+                        foreach (var uptt in MostRecentUPTData)
+                        {
+                            <tr>
+                                <td> @uptt.UserTypeName</td>
+                                <td> @uptt.UserTypeCountAsOfDate</td>
+                            </tr>
+                        }
+                    }
+                    else if (entity == "Clients Per Brand")
+                    {
+                        foreach (var cpb in MostRecentCPBData)
+                        {
+                            <tr>
+                                <td> @cpb.ClientBrandName </td>
+                                <td> @cpb.ClientsPerBrandCountTypeName</td>
+                                <td> @cpb.CountAsOfDate</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
-    <div class="float-child">
-        <table class="table table-bordered table-hover">
-            <thead>
-                @entity
-                <tr>
-                    @if (entity == "Clients Per Type" || entity == "Users Per Type")
-                    {
-                        <th class="sort-th">
-                            Type
-                            <span class="fa "></span>
-                        </th>
-                    }
-                    else if (entity == "Clients Per Status")
-                    {
-                        <th class="sort-th">
-                            Status
-                            <span class="fa "></span>
-                        </th>
-                    }
-                    <th class="sort-th">
-                        Total
-                        <span class="fa "></span>
-                    </th>
-                </tr>
-                @if (entity == "Clients Per Status")
-                {
-                    foreach (var cpss in MostRecentCPSData)
-                    {
-                        <tr>
-                            <td> @cpss.StatusName</td>
-                            <td> @cpss.StatusCountAsOfDate</td>
-                        </tr>
-                    }
-                }
-                else if (entity == "Clients Per Type")
-                {
-                    foreach (var cptt in MostRecentCPTData)
-                    {
-                        <tr>
-                            <td> @cptt.TypeName</td>
-                            <td> @cptt.TypeCountAsOfDate</td>
-                        </tr>
-                    }
-                }
-                else if (entity == "Users Per Type")
-                {
-                    foreach (var uptt in MostRecentUPTData)
-                    {
-                        <tr>
-                            <td> @uptt.UserTypeName</td>
-                            <td> @uptt.UserTypeCountAsOfDate</td>
-                        </tr>
-                    }
-                }
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
+    <br />
+    <br />
 }
 
 @code {
-    string[] Entities = { "Clients Per Status", "Clients Per Type", "Users Per Type" };
-
-    string[] statuses = new string[0];
-    int[] statusData = new int[0];
-    string StatusJson;
-    string[] types = new string[0];
-    int[] typeData = new int[0];
-    string TypeJson;
-    string[] users = new string[0];
-    int[] userData = new int[0];
-    string UserJson;
+    string[] Entities = { "Clients Per Status", "Clients Per Type", "Users Per Type", "Clients Per Brand" };
 
     List<CPS> MostRecentCPSDate;
     string mostRecentCPSDate;
     List<CPSStatus> MostRecentCPSData;
+    string[] statuses = new string[0];
+    int[] statusData = new int[0];
+    string StatusJson;
 
     List<CPT> MostRecentCPTDate;
     string mostRecentCPTDate;
     List<CPTType> MostRecentCPTData;
+    string[] types = new string[0];
+    int[] typeData = new int[0];
+    string TypeJson;
 
     List<UPT> MostRecentUPTDate;
     string mostRecentUPTDate;
     List<UPTType> MostRecentUPTData;
+    string[] users = new string[0];
+    int[] userData = new int[0];
+    string UserJson;
+
+    List<CPB> MostRecentCPBDate;
+    string mostRecentCPBDate;
+    List<CPBCountTypeBrand> MostRecentCPBData;
+    List<ClientBrand> MostRecentBrands;
+    List<ClientsPerBrandCountType> MostRecentCountTypes;
+    string[] brands = new string[0];
+    string[] countTypes = new string[0];
+    int[,] brandData;
+    string BrandJson;
 
     protected override async Task OnInitializedAsync()
     {
@@ -161,14 +198,22 @@
         mostRecentUPTDate = MostRecentUPTDate.ElementAt(0).DateOfReport;
         MostRecentUPTData = await uptManager.getMostRecentTypeCounts(mostRecentUPTDate);
 
+        //Clients Per Brand
+        MostRecentCPBDate = await cpbManager.getMostRecentDate();
+        mostRecentCPBDate = MostRecentCPBDate.ElementAt(0).DateOfReport;
+        MostRecentCountTypes = await cpbManager.getCountTypes();
+        MostRecentBrands = await cpbManager.getBrands();
+        MostRecentCPBData = await cpbManager.getMostRecentBrandCountsOfType(mostRecentCPBDate);
+
         generatePiGraphs();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JSRuntime.InvokeAsync<bool>("generatePiChart", StatusJson);
-        await JSRuntime.InvokeAsync<bool>("generatePiChart", TypeJson);
-        await JSRuntime.InvokeAsync<bool>("generatePiChart", UserJson);
+        await JSRuntime.InvokeAsync<bool>("generatePieChart", StatusJson);
+        await JSRuntime.InvokeAsync<bool>("generatePieChart", TypeJson);
+        await JSRuntime.InvokeAsync<bool>("generatePieChart", UserJson);
+        await JSRuntime.InvokeAsync<bool>("generateBrandPieChart", BrandJson);
     }
 
     public class GraphData
@@ -182,6 +227,22 @@
             this.EntityName = EntityName;
             this.AllEntityNames = AllEntityNames;
             this.AllEntityCountsPerName = AllEntityCountsPerName;
+        }
+    }
+
+    public class ClientsPerBrandGraphData
+    {
+        public string EntityName;
+        public string[] AllCountTypes { get; set; }
+        public string[] AllBrands { get; set; }
+        public int[,] BrandData { get; set; }
+
+        public ClientsPerBrandGraphData(string EntityName, string[] AllCountTypes, string[] AllBrands, int[,] BrandData)
+        {
+            this.EntityName = EntityName;
+            this.AllCountTypes = AllCountTypes;
+            this.AllBrands = AllBrands;
+            this.BrandData = BrandData;
         }
     }
 
@@ -219,5 +280,29 @@
         }
         GraphData UsersPerTypeData = new GraphData("Users Per Type", users, userData);
         UserJson = Newtonsoft.Json.JsonConvert.SerializeObject(UsersPerTypeData);
+
+        //Clients Per Brand
+        foreach (var ct in MostRecentCountTypes)
+        {
+            Array.Resize(ref countTypes, countTypes.Length + 1);
+            countTypes[countTypes.GetUpperBound(0)] = ct.ClientsPerBrandCountTypeName.ToString();
+        }
+        foreach (var brand in MostRecentBrands)
+        {
+            Array.Resize(ref brands, brands.Length + 1);
+            brands[brands.GetUpperBound(0)] = brand.ClientBrandName.ToString();
+        }
+        brandData = new int[countTypes.Length, brands.Length];
+        int overflow = 0;
+        for (int i = 0; i < countTypes.Length; i++)
+        {
+            for (int j = 0; j < brands.Length; j++)
+            {
+                brandData[i, j] = MostRecentCPBData.ElementAt(overflow).CountAsOfDate;
+                overflow++;
+            }
+        }
+        ClientsPerBrandGraphData ClientsPerBrandData = new ClientsPerBrandGraphData("Clients Per Brand", countTypes, brands, brandData);
+        BrandJson = Newtonsoft.Json.JsonConvert.SerializeObject(ClientsPerBrandData);
     }
 }

@@ -9,16 +9,14 @@ namespace PaychexDataConsolidationTool.Entities
     public class CPB
     {
         [Key]
-        public int ID { get; set; }
+        public int ClientsPerBrandId { get; set; }
 
-        public string Brand { get; set; }
+        public string DateOfReport { get; set; }
 
-        public int ActiveClientCount { get; set; }
+        public int ClientBrandId { get; set; }
        
-        public int ActiveEECount { get; set; }
+        public int ClientsPerBrandCountTypeId { get; set; }
 
-        public int Count3 { get; set; }
-
-        public int Count4 { get; set; }
+        public int CountAsOfDate { get; set; }
     }
 }

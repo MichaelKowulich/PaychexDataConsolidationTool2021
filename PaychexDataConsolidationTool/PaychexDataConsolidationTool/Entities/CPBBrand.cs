@@ -19,9 +19,9 @@ namespace PaychexDataConsolidationTool.Entities
         
         public int ClientsPerBrandCountTypeId { get; set; }
 
-        public string ClientPerBrandCountTypeName { get; set; }
+        public string ClientsPerBrandCountTypeName { get; set; }
 
-        public int BrandCountAsOfDate { get; set; }
+        public int CountAsOfDate { get; set; }
 
     }
 }

@@ -32,7 +32,7 @@ namespace PaychexDataConsolidationTool.Concrete
         public Task<List<CPBCountTypeBrand>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string countTypeName, string direction = "DESC", string search = "")
         {
             var cpbb = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>
-                ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName as BrandName, " + "" +
+                ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName, " + "" +
                 $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName as ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate as CountAsOfDate " +
                 $"from[dbo].[ClientsPerBrand] " +
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +

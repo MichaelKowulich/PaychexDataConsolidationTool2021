@@ -228,7 +228,7 @@
     {
         await this.OnSearchAsync();
 
-        // await JSRuntime.InvokeAsync<bool>("generateCPBGraph", json);
+        await JSRuntime.InvokeAsync<bool>("generateCPBGraph", json);
 
         await this.generateTable();
     }

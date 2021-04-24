@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PaychexDataConsolidationTool.Concrete;
 using PaychexDataConsolidationTool.Contracts;
-using PaychexDataConsolidationTool.Models;
 using PaychexDataConsolidationTool.Entities;
 using System;
 using System.Collections.Generic;

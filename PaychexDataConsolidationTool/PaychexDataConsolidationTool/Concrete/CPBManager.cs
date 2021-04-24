@@ -32,14 +32,14 @@ namespace PaychexDataConsolidationTool.Concrete
         public Task<List<CPBCountTypeBrand>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string countTypeName, string direction = "DESC", string search = "")
         {
             var cpbb = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>
-                ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName, " + "" +
-                $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName as ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate as CountAsOfDate " +
+                ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName, " +
+                $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate as CountAsOfDate " +
                 $"from[dbo].[ClientsPerBrand] " +
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +
                 $"INNER JOIN [dbo].[ClientsPerBrandCountType] ON [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeId = [dbo].[ClientsPerBrand].ClientsPerBrandCountTypeId " +
                 $"WHERE " +
                 $"[dbo].[ClientsPerBrand].DateOfReport >= '{startDate}' " +
-                $"AND[dbo].[ClientsPerBrand].DateOfReport <= '{endDate}' " +
+                $"AND [dbo].[ClientsPerBrand].DateOfReport <= '{endDate}' " +
                 $"AND [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName = '{countTypeName}' " +
                 $"ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;", null, commandType: CommandType.Text));
             return cpbb;
@@ -54,10 +54,10 @@ namespace PaychexDataConsolidationTool.Concrete
 
         public Task<List<CPB>> getDates(string startDate, string endDate)
         {
-            var cpss = Task.FromResult(_dapperManager.GetAll<CPB>
+            var cpbb = Task.FromResult(_dapperManager.GetAll<CPB>
                 ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerBrand] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC", null, commandType: CommandType.Text));
             Console.WriteLine($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerBrand] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC");
-            return cpss;
+            return cpbb;
         }
 
         public Task<List<ClientBrand>> getBrands()
@@ -95,13 +95,11 @@ namespace PaychexDataConsolidationTool.Concrete
             return cpbb;
         }
 
-        // Ian: FetchCPB doesn't use this method so I haven't implemented it yet but this 
-        // is how I figured the method should be written for use on the home page.
         public Task<List<CPBCountTypeBrand>> getMostRecentBrandCountsOfType(string date)
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>
-                ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName as ClientBrandName, " + "" +
-                $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName as ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate as CountAsOfDate " +
+                ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName, " + "" +
+                $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate " +
                 $"FROM [dbo].[ClientsPerBrand] " +
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +
                 $"INNER JOIN [dbo].[ClientsPerBrandCountType] ON [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeId = [dbo].[ClientsPerBrand].ClientsPerBrandCountTypeId " +

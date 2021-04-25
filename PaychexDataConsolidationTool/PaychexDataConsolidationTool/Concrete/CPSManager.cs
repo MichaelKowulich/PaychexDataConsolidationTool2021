@@ -42,13 +42,6 @@ namespace PaychexDataConsolidationTool.Concrete
             return cpss;
         }
 
-        public Task<int> CountAfterSearch(string startDate, string endDate)
-        {
-            var totCPS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) from [CPS] WHERE Date >= '{startDate}' AND Date <= '{endDate}'", null,
-                    commandType: CommandType.Text));
-            return totCPS;
-        }
-
         public Task<List<CPS>> getDates(string startDate, string endDate)
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<CPS>

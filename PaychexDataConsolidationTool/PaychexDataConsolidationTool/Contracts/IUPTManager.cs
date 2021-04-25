@@ -11,7 +11,6 @@ namespace PaychexDataConsolidationTool.Contracts
         Task<List<UPTType>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string direction = "DESC", string search = "");
         Task<List<PaychexDataConsolidationTool.Entities.UserType>> getTypes();
         Task<List<UPTType>> getTypeReportData(string startDate, string endDate, string typeName);
-        public Task<int> CountAfterSearch(string startDate, string endDate);
         public Task<List<UPT>> getMostRecentDate();
         public Task<List<UPTType>> getMostRecentTypeCounts(string date);
     }

@@ -40,15 +40,8 @@ namespace PaychexDataConsolidationTool.Concrete
                 $"ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;", null, commandType: CommandType.Text));
             return uptt;
         }
-        public Task<int> CountAfterSearch(string startDate, string endDate)
-        {
-            var totUPT = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) from [UPT] WHERE Date >= '{startDate}' AND Date <= '{endDate}'", null,
-                    commandType: CommandType.Text));
-            //Console.WriteLine($"select COUNT(*) from [UPT] WHERE Date >= '{startDate}' AND Date <= '{endDate}'");
-            return totUPT;
-        }
 
-        public Task<List<UPT>> getDates(string startDate, string endDate)
+       public Task<List<UPT>> getDates(string startDate, string endDate)
         {
             var upts = Task.FromResult(_dapperManager.GetAll<UPT>
                 ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[UsersPerType] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC", null, commandType: CommandType.Text));

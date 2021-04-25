@@ -304,32 +304,6 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
         }
 
         //
-        //  Count After Search Valid Call
-        //
-
-        [Fact]
-        public async void CountAfterSearch_ValidCall()
-        {
-            using (var mock = AutoMock.GetLoose())
-            {
-                mock.Mock<IDapperManager>()
-                    .Setup(x => x.Get<int>($"select COUNT(*) from [CPS] WHERE Date >= '2021-03-01' AND Date <= '2021-04-03'", null, CommandType.Text))
-                    .Returns(GetSampleCountAfterSearch());
-
-                var cls = mock.Create<CPSManager>();
-                var expected = GetSampleCountAfterSearch();
-
-                var actual = await cls.CountAfterSearch("2021-03-01", "2021-04-03");
-
-                Xunit.Assert.Equal(actual, expected);
-
-            }
-        }
-        private int GetSampleCountAfterSearch()
-        {
-            return 28;
-        }
-        //
         //  Get Most Recent Date Valid Call
         //
 

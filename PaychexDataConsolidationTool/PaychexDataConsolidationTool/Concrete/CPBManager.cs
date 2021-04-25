@@ -45,13 +45,6 @@ namespace PaychexDataConsolidationTool.Concrete
             return cpbb;
         }
 
-        public Task<int> CountAfterSearch(string startDate, string endDate)
-        {
-            var totCPB = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) from [CPB] WHERE Date >= '{startDate}' AND Date <= '{endDate}'", null,
-                    commandType: CommandType.Text));
-            return totCPB;
-        }
-
         public Task<List<CPB>> getDates(string startDate, string endDate)
         {
             var cpbb = Task.FromResult(_dapperManager.GetAll<CPB>

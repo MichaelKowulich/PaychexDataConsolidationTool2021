@@ -12,7 +12,6 @@ namespace PaychexDataConsolidationTool.Contracts
         Task<List<PaychexDataConsolidationTool.Entities.ClientBrand>> getBrands();
         Task<List<PaychexDataConsolidationTool.Entities.ClientsPerBrandCountType>> getCountTypes();
         Task<List<CPBCountTypeBrand>> getBrandReportData(string startDate, string endDate, string brandName, string countTypeName);
-        public Task<int> CountAfterSearch(string startDate, string endDate);
         public Task<List<CPB>> getMostRecentDate();
         public Task<List<CPBCountTypeBrand>> getMostRecentBrandCountsOfType(string date);
     }

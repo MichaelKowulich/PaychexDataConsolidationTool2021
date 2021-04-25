@@ -40,13 +40,6 @@ namespace PaychexDataConsolidationTool.Concrete
                 $"ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;", null, commandType: CommandType.Text));
             return cptt;
         }
-        public Task<int> CountAfterSearch(string startDate, string endDate)
-        {
-            var totCPT = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) from [CPT] WHERE Date >= '{startDate}' AND Date <= '{endDate}'", null,
-                    commandType: CommandType.Text));
-            //Console.WriteLine($"select COUNT(*) from [CPT] WHERE Date >= '{startDate}' AND Date <= '{endDate}'");
-            return totCPT;
-        }
 
         public Task<List<CPT>> getDates(string startDate, string endDate)
         {

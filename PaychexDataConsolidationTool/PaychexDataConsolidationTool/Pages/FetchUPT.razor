@@ -111,24 +111,6 @@
 
 @code {
 
-    /////////////////////////////////////////////////////////////
-    //
-    // Creating a GraphData Object so we can flatten (serialize) it
-    // and send it over to javascript interop.js
-    //
-    public class GraphData
-    {
-        public int[,] TypeCounts { get; set; }
-        public string[] Dates { get; set; }
-        public string[] Types { get; set; }
-        public GraphData(string[] theDates, string[] theTypes, int i, int j)
-        {
-            this.Types = theTypes;
-            this.TypeCounts = new int[i, j];
-            this.Dates = theDates;
-        }
-    }
-
     ////////////////////////////////////////////////////////////////////
     //
     // Values that we have bound to input elements of this razor file
@@ -192,7 +174,7 @@
     {
         await this.OnSearchAsync();
 
-        await JSRuntime.InvokeAsync<bool>("generateUPTGraph", json);
+        await JSRuntime.InvokeAsync<bool>("generateLineGraph", json);
 
         await this.generateTable();
     }
@@ -225,7 +207,7 @@
         }
 
         //Create our graphdata object because now we know what amount of data we are working with
-        GraphData obj = new GraphData(dates, types, types.Length, dates.Length);
+        GraphData obj = new GraphData("Users Per Type",dates, types, types.Length, dates.Length);
 
         /////////////////////////////////////////////////////////////
         //
@@ -260,7 +242,7 @@
                         CountsPerType[j] = 0;
                     }
                 }
-                obj.TypeCounts[i, j] = CountsPerType[j];
+                obj.EntityCounts[i, j] = CountsPerType[j];
             }
             overflow = 0;
         }

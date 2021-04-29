@@ -111,24 +111,6 @@
 
 @code {
 
-    /////////////////////////////////////////////////////////////
-    //
-    // Creating a GraphData Object so we can flatten (serialize) it
-    // and send it over to javascript interop.js
-    //
-    public class GraphData
-    {
-        public int[,] StatusCounts { get; set; }
-        public string[] Dates { get; set; }
-        public string[] Statuses { get; set; }
-        public GraphData(string[] theDates, string[] theStatuses, int i, int j)
-        {
-            this.Statuses = theStatuses;
-            this.StatusCounts = new int[i, j];
-            this.Dates = theDates;
-        }
-    }
-
     ////////////////////////////////////////////////////////////////////
     //
     // Values that we have bound to input elements of this razor file
@@ -191,7 +173,7 @@
     {
         await this.OnSearchAsync();
 
-        await JSRuntime.InvokeAsync<bool>("generateCPSGraph", json);
+        await JSRuntime.InvokeAsync<bool>("generateLineGraph", json);
 
         await this.generateTable();
     }
@@ -223,7 +205,7 @@
         }
 
         //Create our graphdata object because now we know what amount of data we are working with
-        GraphData obj = new GraphData(dates, statuses, statuses.Length, dates.Length);
+        GraphData obj = new GraphData("Clients Per Status", dates, statuses, statuses.Length, dates.Length);
 
         /////////////////////////////////////////////////////////////
         //
@@ -258,7 +240,7 @@
                         CountsPerStatus[j] = 0;
                     }
                 }
-                obj.StatusCounts[i, j] = CountsPerStatus[j];
+                obj.EntityCounts[i, j] = CountsPerStatus[j];
             }
             overflow = 0;
         }

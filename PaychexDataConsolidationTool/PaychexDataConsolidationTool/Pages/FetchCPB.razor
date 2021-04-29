@@ -122,24 +122,6 @@
 
 @code {
 
-    /////////////////////////////////////////////////////////////
-    //
-    // Creating a GraphData Object so we can flatten (serialize) it
-    // and send it over to javascript interop.js
-    //
-    public class GraphData
-    {
-        public int[,] BrandCounts { get; set; }
-        public string[] Dates { get; set; }
-        public string[] Brands { get; set; }
-        public GraphData(string[] theDates, string[] theBrands, int i, int j)
-        {
-            this.Brands = theBrands;
-            this.BrandCounts = new int[i, j];
-            this.Dates = theDates;
-        }
-    }
-
     ////////////////////////////////////////////////////////////////////
     //
     // Values that we have bound to input elements of this razor file
@@ -223,7 +205,7 @@
     {
         await this.OnSearchAsync();
 
-        await JSRuntime.InvokeAsync<bool>("generateCPBGraph", json);
+        await JSRuntime.InvokeAsync<bool>("generateLineGraph", json);
 
         await this.generateTable();
     }
@@ -259,7 +241,7 @@
         }
 
         //Create our graphdata object because now we know what amount of data we are working with
-        GraphData obj = new GraphData(dates, brands, brands.Length, dates.Length);
+        GraphData obj = new GraphData("Clients Per Brand", dates, brands, brands.Length, dates.Length);
 
         /////////////////////////////////////////////////////////////
         //
@@ -294,7 +276,7 @@
                         CountsPerBrand[j] = 0;
                     }
                 }
-                obj.BrandCounts[i, j] = CountsPerBrand[j];
+                obj.EntityCounts[i, j] = CountsPerBrand[j];
             }
             overflow = 0;
         }

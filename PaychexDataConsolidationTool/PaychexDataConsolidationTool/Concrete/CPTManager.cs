@@ -16,6 +16,13 @@ namespace PaychexDataConsolidationTool.Concrete
         {
             this._dapperManager = dapperManager;
         }
+
+        /// <summary>
+        /// Count - Integer count of all records retrieved
+        /// </summary>
+        /// <param name="startDate">Start Date</param>
+        /// <param name="endDate">End Date</param>
+        /// <returns> Integer count of all records retrieved </returns>
         public Task<int> Count(string startDate, string endDate)
         {
             var totCPTS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) " +
@@ -28,7 +35,17 @@ namespace PaychexDataConsolidationTool.Concrete
             return totCPTS;
         }
 
-        public Task<List<CPTType>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string direction = "DESC", string search = "")
+        /// <summary>
+        /// ListAll - List of All CPS joined with Status to put into tabular view
+        /// </summary>
+        /// <param name="skip"> What Offset you are on </param>
+        /// <param name="take"> How many rows you grab </param>
+        /// <param name="orderBy"> What column to order by </param>
+        /// <param name="startDate"> Start Date</param>
+        /// <param name="endDate"> End Date</param>
+        /// <param name="direction"> Direction to sort by </param>
+        /// <returns>List of All CPT joined with ClientType to put into tabular view</returns>
+        public Task<List<CPTType>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string direction = "DESC")
         {
             var cptt = Task.FromResult(_dapperManager.GetAll<CPTType>
                 ($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientType].ClientTypeName as ClientTypeName, [dbo].[ClientsPerType].TypeCountAsOfDate as TypeCountAsOfDate " +
@@ -41,6 +58,12 @@ namespace PaychexDataConsolidationTool.Concrete
             return cptt;
         }
 
+        /// <summary>
+        /// getDates - List of Dates in database between range
+        /// </summary>
+        /// <param name="startDate"> Start Date</param>
+        /// <param name="endDate"> End Date </param>
+        /// <returns></returns>
         public Task<List<CPT>> getDates(string startDate, string endDate)
         {
             var cpts = Task.FromResult(_dapperManager.GetAll<CPT>
@@ -49,6 +72,10 @@ namespace PaychexDataConsolidationTool.Concrete
             return cpts;
         }
 
+        /// <summary>
+        /// getTypes - gets all Client Types currently in database
+        /// </summary>
+        /// <returns>List of all Client Types currently in database </returns>
         public Task<List<PaychexDataConsolidationTool.Entities.ClientType>> getTypes()
         {
             var cpts = Task.FromResult(_dapperManager.GetAll<PaychexDataConsolidationTool.Entities.ClientType>
@@ -56,6 +83,13 @@ namespace PaychexDataConsolidationTool.Concrete
             return cpts;
         }
 
+        /// <summary>
+        /// getTypeReportData - Data used for the line graph in Clients Per Type
+        /// </summary>
+        /// <param name="startDate"> Start Date </param>
+        /// <param name="endDate"> End Date </param>
+        /// <param name="typeName"> Type Name </param>
+        /// <returns>List of CPT joined with ClientType </returns>
         public Task<List<CPTType>> getTypeReportData(string startDate, string endDate, string typeName)
         {
             var cptt = Task.FromResult(_dapperManager.GetAll<CPTType>
@@ -70,6 +104,10 @@ namespace PaychexDataConsolidationTool.Concrete
             return cptt;
         }
 
+        /// <summary>
+        /// getMostRecentDate - Gets most recent date in database
+        /// </summary>
+        /// <returns>List of all objects matching the most recent date</returns>
         public Task<List<CPT>> getMostRecentDate()
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<CPT>
@@ -77,6 +115,11 @@ namespace PaychexDataConsolidationTool.Concrete
             return cpss;
         }
 
+        /// <summary>
+        /// getMostRecentTypeCounts- Gets data to populate the pi chart on the dashboard for Clients Per Type
+        /// </summary>
+        /// <param name="date"> Date </param>
+        /// <returns>List of CPT joined with ClientType objects</returns>
         public Task<List<CPTType>> getMostRecentTypeCounts(string date)
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<CPTType>

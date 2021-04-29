@@ -17,6 +17,12 @@ namespace PaychexDataConsolidationTool.Concrete
             this._dapperManager = dapperManager;
         }
 
+        /// <summary>
+        /// Count - Integer count of all records retrieved
+        /// </summary>
+        /// <param name="startDate">Start Date</param>
+        /// <param name="endDate">End Date</param>
+        /// <returns> Integer count of all records retrieved </returns>
         public Task<int> Count(string startDate, string endDate)
         {
             var totCPBB = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) " +
@@ -29,7 +35,18 @@ namespace PaychexDataConsolidationTool.Concrete
             return totCPBB;
         }
 
-        public Task<List<CPBCountTypeBrand>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string countTypeName, string direction = "DESC", string search = "")
+        /// <summary>
+        /// ListAll - List of All CPB joined with CountType/Brand to put into tabular view
+        /// </summary>
+        /// <param name="skip"> What Offset you are on </param>
+        /// <param name="take"> How many rows you grab </param>
+        /// <param name="orderBy"> What column to order by </param>
+        /// <param name="startDate"> Start Date</param>
+        /// <param name="endDate"> End Date</param>
+        /// <param name="countTypeName"> Name of the Count Type</param>
+        /// <param name="direction"> Direction to sort by </param>
+        /// <returns>List of All CPB joined with CountType/Brand to put into tabular view</returns>
+        public Task<List<CPBCountTypeBrand>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string countTypeName, string direction = "DESC")
         {
             var cpbb = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>
                 ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName, " +
@@ -45,6 +62,12 @@ namespace PaychexDataConsolidationTool.Concrete
             return cpbb;
         }
 
+        /// <summary>
+        /// getDates - List of Dates in database between range
+        /// </summary>
+        /// <param name="startDate"> Start Date</param>
+        /// <param name="endDate"> End Date </param>
+        /// <returns></returns>
         public Task<List<CPB>> getDates(string startDate, string endDate)
         {
             var cpbb = Task.FromResult(_dapperManager.GetAll<CPB>
@@ -53,18 +76,36 @@ namespace PaychexDataConsolidationTool.Concrete
             return cpbb;
         }
 
+        /// <summary>
+        /// getBrands - gets all brands currently in database
+        /// </summary>
+        /// <returns>List of all brands currently in database </returns>
         public Task<List<ClientBrand>> getBrands()
         {
             var cpbb = Task.FromResult(_dapperManager.GetAll<ClientBrand>
                 ($"SELECT ClientBrandName FROM [dbo].[ClientBrand] ORDER BY ClientBrandId ASC", null, commandType: CommandType.Text));
             return cpbb;
         }
+
+        /// <summary>
+        /// getCountTypes - gets all CountTypes currently in database
+        /// </summary>
+        /// <returns> List of all Count Types currently in database </returns>
         public Task<List<ClientsPerBrandCountType>> getCountTypes()
         {
             var cpbb = Task.FromResult(_dapperManager.GetAll<ClientsPerBrandCountType>
                 ($"SELECT ClientsPerBrandCountTypeName FROM [dbo].[ClientsPerBrandCountType] ORDER BY ClientsPerBrandCountTypeId ASC", null, commandType: CommandType.Text));
             return cpbb;
         }
+
+        /// <summary>
+        /// getBrandReportData - Data used for the line graph in Clients Per Brand
+        /// </summary>
+        /// <param name="startDate"> Start Date </param>
+        /// <param name="endDate"> End Date </param>
+        /// <param name="brandName"> Brand Name </param>
+        /// <param name="countTypeName"> Count Type Name </param>
+        /// <returns>List of CPB joined with CountType/Brand</returns>
         public Task<List<CPBCountTypeBrand>> getBrandReportData(string startDate, string endDate, string brandName, string countTypeName)
         {
             var cpbb = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>
@@ -81,6 +122,10 @@ namespace PaychexDataConsolidationTool.Concrete
                 $"ORDER BY[dbo].[ClientsPerBrand].DateOfReport", null, commandType: CommandType.Text));
             return cpbb;
         }
+        /// <summary>
+        /// getMostRecentDate - Gets most recent date in database
+        /// </summary>
+        /// <returns>List of all objects matching the most recent date</returns>
         public Task<List<CPB>> getMostRecentDate()
         {
             var cpbb = Task.FromResult(_dapperManager.GetAll<CPB>
@@ -88,6 +133,11 @@ namespace PaychexDataConsolidationTool.Concrete
             return cpbb;
         }
 
+        /// <summary>
+        /// getMostRecentBrandCountsOfType - Gets data to populate the pi chart on the dashboard per type
+        /// </summary>
+        /// <param name="date"> Date </param>
+        /// <returns>List of CPB joined with CountType/Brand objects</returns>
         public Task<List<CPBCountTypeBrand>> getMostRecentBrandCountsOfType(string date)
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>

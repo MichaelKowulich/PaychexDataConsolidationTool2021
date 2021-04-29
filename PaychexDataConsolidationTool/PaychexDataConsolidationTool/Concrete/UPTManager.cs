@@ -16,6 +16,13 @@ namespace PaychexDataConsolidationTool.Concrete
         {
             this._dapperManager = dapperManager;
         }
+
+        /// <summary>
+        /// Count - Integer count of all records retrieved
+        /// </summary>
+        /// <param name="startDate">Start Date</param>
+        /// <param name="endDate">End Date</param>
+        /// <returns> Integer count of all records retrieved </returns>
         public Task<int> Count(string startDate, string endDate)
         {
             var totUPTS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) " +
@@ -28,7 +35,17 @@ namespace PaychexDataConsolidationTool.Concrete
             return totUPTS;
         }
 
-        public Task<List<UPTType>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string direction = "DESC", string search = "")
+        /// <summary>
+        /// ListAll - List of All UPT joined with UserType to put into tabular view
+        /// </summary>
+        /// <param name="skip"> What Offset you are on </param>
+        /// <param name="take"> How many rows you grab </param>
+        /// <param name="orderBy"> What column to order by </param>
+        /// <param name="startDate"> Start Date</param>
+        /// <param name="endDate"> End Date</param>
+        /// <param name="direction"> Direction to sort by </param>
+        /// <returns>List of All UPT joined with UserType to put into tabular view</returns>
+        public Task<List<UPTType>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string direction = "DESC")
         {
             var uptt = Task.FromResult(_dapperManager.GetAll<UPTType>
                 ($"Select FORMAT ([dbo].[UsersPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName as UserTypeName, [dbo].[UsersPerType].UserTypeCountAsOfDate as UserTypeCountAsOfDate " +
@@ -41,7 +58,13 @@ namespace PaychexDataConsolidationTool.Concrete
             return uptt;
         }
 
-       public Task<List<UPT>> getDates(string startDate, string endDate)
+        /// <summary>
+        /// getDates - List of Dates in database between range
+        /// </summary>
+        /// <param name="startDate"> Start Date</param>
+        /// <param name="endDate"> End Date </param>
+        /// <returns></returns>
+        public Task<List<UPT>> getDates(string startDate, string endDate)
         {
             var upts = Task.FromResult(_dapperManager.GetAll<UPT>
                 ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[UsersPerType] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC", null, commandType: CommandType.Text));
@@ -49,14 +72,24 @@ namespace PaychexDataConsolidationTool.Concrete
             return upts;
         }
 
+        /// <summary>
+        /// getTypes - gets all User Types currently in database
+        /// </summary>
+        /// <returns>List of all User Types currently in database </returns>
         public Task<List<PaychexDataConsolidationTool.Entities.UserType>> getTypes()
         {
             var upts = Task.FromResult(_dapperManager.GetAll<PaychexDataConsolidationTool.Entities.UserType>
                 ($"SELECT UserTypeName FROM [dbo].[UserType] ORDER BY UserTypeId ASC", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT UserTypeName FROM [dbo].[UserType] ORDER BY UserTypeId ASC");
             return upts;
         }
 
+        /// <summary>
+        /// getTypeReportData - Data used for the line graph in Users Per Type
+        /// </summary>
+        /// <param name="startDate"> Start Date </param>
+        /// <param name="endDate"> End Date </param>
+        /// <param name="typeName"> Type Name </param>
+        /// <returns>List of UPT joined with UserType </returns>
         public Task<List<UPTType>> getTypeReportData(string startDate, string endDate, string typeName)
         {
             var uptt = Task.FromResult(_dapperManager.GetAll<UPTType>
@@ -68,17 +101,13 @@ namespace PaychexDataConsolidationTool.Concrete
                 $"AND[dbo].[UsersPerType].DateOfReport <= '{endDate}' " +
                 $"AND [dbo].[UserType].UserTypeName = '{typeName}' " +
                 $"ORDER BY[dbo].[UsersPerType].DateOfReport", null, commandType: CommandType.Text));
-            Console.WriteLine($"Select FORMAT ([dbo].[UsersPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName, [dbo].[UsersPerType].UserTypeCountAsOfDate " +
-                $"from[dbo].[UsersPerType] " +
-                $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeID" +
-                $"WHERE  " +
-                $"[dbo].[UsersPerType].DateOfReport >= '{startDate}' " +
-                $"AND[dbo].[UsersPerType].DateOfReport <= '{endDate}' " +
-                $"AND [dbo].[UserType].UserTypeName = '{typeName}' " +
-                $"ORDER BY[dbo].[UsersPerType].DateOfReport");
             return uptt;
         }
 
+        /// <summary>
+        /// getMostRecentDate - Gets most recent date in database
+        /// </summary>
+        /// <returns>List of all objects matching the most recent date</returns>
         public Task<List<UPT>> getMostRecentDate()
         {
             var cpss = Task.FromResult(_dapperManager.GetAll<UPT>
@@ -86,6 +115,11 @@ namespace PaychexDataConsolidationTool.Concrete
             return cpss;
         }
 
+        /// <summary>
+        /// getMostRecentTypeCounts- Gets data to populate the pi chart on the dashboard for Users Per Type
+        /// </summary>
+        /// <param name="date"> Date </param>
+        /// <returns>List of UPT joined with UserType objects</returns>
         public Task<List<UPTType>> getMostRecentTypeCounts(string date)
         {
             var uptt = Task.FromResult(_dapperManager.GetAll<UPTType>

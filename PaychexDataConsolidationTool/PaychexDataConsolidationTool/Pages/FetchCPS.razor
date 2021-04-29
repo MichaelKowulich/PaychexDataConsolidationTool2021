@@ -113,18 +113,9 @@
 
 
     #region Pagination
-
-    int totalPages;
-    int totalRecords;
-    int curPage;
-    int pagerSize;
-    int pageSize;
-    int startPage;
     string sortColumnName = "DateOfReport";
     string sortDir = "ASC";
-
     TableLogic CPStablelogic;
-
     #endregion
 
     public bool hasSearched = false;
@@ -228,13 +219,13 @@
     //
     protected async Task generateTable()
     {
-        pagerSize = 3;
-        pageSize = statuses.Length;
-        curPage = 1;
+        int pagerSize = 3;
+        int pageSize = statuses.Length;
+        int curPage = 1;
         cpssModel = await cpsManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, startDate.ToString(), endDate.ToString(), sortDir);
-        totalRecords = await cpsManager.Count(startDate.ToString(), endDate.ToString());
-        totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
-        startPage = 1;
+        int totalRecords = await cpsManager.Count(startDate.ToString(), endDate.ToString());
+        int totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
+        int startPage = 1;
         CPStablelogic = new TableLogic(totalPages, totalRecords, curPage, pagerSize, pageSize, startPage, sortColumnName, sortDir);
         CPStablelogic.SetPagerSize("forward");
     }

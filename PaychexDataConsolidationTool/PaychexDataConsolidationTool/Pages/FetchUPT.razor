@@ -114,18 +114,9 @@
 
 
     #region Pagination
-
-    int totalPages;
-    int totalRecords;
-    int curPage;
-    int pagerSize;
-    int pageSize;
-    int startPage;
     string sortColumnName = "DateOfReport";
     string sortDir = "ASC";
-
     TableLogic UPTtablelogic;
-
     #endregion
 
     public bool hasSearched = false;
@@ -230,13 +221,13 @@
     //
     protected async Task generateTable()
     {
-        pagerSize = 3;
-        pageSize = types.Length;
-        curPage = 1;
+        int pagerSize = 3;
+        int pageSize = types.Length;
+        int curPage = 1;
         upttModel = await uptManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, startDate.ToString(), endDate.ToString(), sortDir);
-        totalRecords = await uptManager.Count(startDate.ToString(), endDate.ToString());
-        totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
-        startPage = 1;
+        int totalRecords = await uptManager.Count(startDate.ToString(), endDate.ToString());
+        int totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
+        int startPage = 1;
         UPTtablelogic = new TableLogic(totalPages, totalRecords, curPage, pagerSize, pageSize, startPage, sortColumnName, sortDir);
         UPTtablelogic.SetPagerSize("forward");
     }

@@ -86,15 +86,14 @@
                                 Brand
                                 <span class="fa "></span>
                             </th>
+                            foreach (var countType in MostRecentCountTypes)
+                            {
                             <th class="sort-th">
-                                Count Type
+                                @countType.ClientsPerBrandCountTypeName
                                 <span class="fa "></span>
                             </th>
+                            }
                         }
-                        <th class="sort-th">
-                            Total
-                            <span class="fa "></span>
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -130,14 +129,23 @@
                     }
                     else if (entity == "Clients Per Brand")
                     {
-                        foreach (var cpb in MostRecentCPBData)
+                        for (int i = 0; i < MostRecentCPBData.Count / MostRecentCountTypes.Count; i++)
                         {
                             <tr>
-                                <td> @cpb.ClientBrandName </td>
-                                <td> @cpb.ClientsPerBrandCountTypeName</td>
-                                <td> @cpb.CountAsOfDate</td>
+                                <td> @MostRecentCPBData.ElementAt(i).ClientBrandName </td>
+                                @for (int j = 0; j < MostRecentCountTypes.Count; j++)
+                                {
+                                    <td>@brandData[j][i]</td>
+                                }
                             </tr>
                         }
+                        <tr>
+                            <td> <b> TOTAL </b> </td>
+                            @for (int i = 0; i < MostRecentCountTypes.Count; i++)
+                            {
+                                <td> @brandData[i].Sum()</td>
+                            }
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -178,7 +186,7 @@
     List<ClientsPerBrandCountType> MostRecentCountTypes;
     string[] brands = new string[0];
     string[] countTypes = new string[0];
-    int[,] brandData;
+    int[][] brandData;
     string BrandJson;
 
     protected override async Task OnInitializedAsync()
@@ -235,9 +243,9 @@
         public string EntityName;
         public string[] AllCountTypes { get; set; }
         public string[] AllBrands { get; set; }
-        public int[,] BrandData { get; set; }
+        public int[][] BrandData { get; set; }
 
-        public ClientsPerBrandGraphData(string EntityName, string[] AllCountTypes, string[] AllBrands, int[,] BrandData)
+        public ClientsPerBrandGraphData(string EntityName, string[] AllCountTypes, string[] AllBrands, int[][] BrandData)
         {
             this.EntityName = EntityName;
             this.AllCountTypes = AllCountTypes;
@@ -292,13 +300,14 @@
             Array.Resize(ref brands, brands.Length + 1);
             brands[brands.GetUpperBound(0)] = brand.ClientBrandName.ToString();
         }
-        brandData = new int[countTypes.Length, brands.Length];
+        brandData = new int[countTypes.Length][];
         int overflow = 0;
         for (int i = 0; i < countTypes.Length; i++)
         {
+            brandData[i] = new int[brands.Length];
             for (int j = 0; j < brands.Length; j++)
             {
-                brandData[i, j] = MostRecentCPBData.ElementAt(overflow).CountAsOfDate;
+                brandData[i][j] = MostRecentCPBData.ElementAt(overflow).CountAsOfDate;
                 overflow++;
             }
         }

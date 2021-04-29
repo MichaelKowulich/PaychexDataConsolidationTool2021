@@ -9,7 +9,7 @@ using System.Data;
 using System.Text;
 using Newtonsoft.Json;
 using Xunit;
-using Type = PaychexDataConsolidationTool.Entities.Type;
+using Type = PaychexDataConsolidationTool.Entities.ClientType;
 
 namespace PaychexDataConsolidationTool.Concrete.Tests
 {
@@ -76,7 +76,7 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
             using (var mock = AutoMock.GetLoose())
             {
                 mock.Mock<IDapperManager>()
-                    .Setup(x => x.GetAll<Type>("SELECT TypeName FROM [dbo].[Type] ORDER BY TypeId ASC", null, CommandType.Text))
+                    .Setup(x => x.GetAll<ClientType>("SELECT ClientTypeName FROM [dbo].[ClientType] ORDER BY ClientTypeId ASC", null, CommandType.Text))
                     .Returns(GetSampleTypes());
 
                 var cls = mock.Create<CPTManager>();
@@ -88,30 +88,30 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 Xunit.Assert.Equal(expected.Count, actual.Count);
                 for (int i = 0; i < expected.Count; i++)
                 {
-                    Xunit.Assert.Equal(expected[i].TypeName, actual[i].TypeName);
+                    Xunit.Assert.Equal(expected[i].ClientTypeName, actual[i].ClientTypeName);
                 }
             }
         }
 
-        private List<Type> GetSampleTypes()
+        private List<ClientType> GetSampleTypes()
         {
-            List<Type> output = new List<Type>
+            List<ClientType> output = new List<ClientType>
             {
-                new Type
+                new ClientType
                 {
-                    TypeName = "Standalone Clients"
+                    ClientTypeName = "Standalone Clients"
                 },
-                new Type
+                new ClientType
                 {
-                    TypeName = "Nettime Organic Clients"
+                    ClientTypeName = "Nettime Organic Clients"
                 },
-                new Type
+                new ClientType
                 {
-                    TypeName = "FlexTime Clients"
+                    ClientTypeName = "FlexTime Clients"
                 },
-                new Type
+                new ClientType
                 {
-                    TypeName = "Essentials Clients"
+                    ClientTypeName = "Essentials Clients"
                 },
             };
 
@@ -128,9 +128,9 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
             using (var mock = AutoMock.GetLoose())
             {
                 mock.Mock<IDapperManager>()
-                    .Setup(x => x.GetAll<CPTType>($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Type].TypeName as TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate as TypeCountAsOfDate " +
+                    .Setup(x => x.GetAll<CPTType>($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientType].ClientTypeName as ClientTypeName, [dbo].[ClientsPerType].TypeCountAsOfDate as TypeCountAsOfDate " +
                 $"from [dbo].[ClientsPerType] " +
-                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
                 $"WHERE " +
                 $"[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
                 $"AND [dbo].[ClientsPerType].DateOfReport <= '2021-04-03' " +
@@ -148,7 +148,7 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 {
                     Xunit.Assert.Equal(expected[i].DateOfReport, actual[i].DateOfReport);
                     Xunit.Assert.Equal(expected[i].TypeCountAsOfDate, actual[i].TypeCountAsOfDate);
-                    Xunit.Assert.Equal(expected[i].TypeName, actual[i].TypeName);
+                    Xunit.Assert.Equal(expected[i].ClientTypeName, actual[i].ClientTypeName);
                 }
             }
         }
@@ -159,50 +159,50 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 new CPTType
                 {
                     DateOfReport = "2021-03-13",
-                    TypeName = "Essentials Clients",
+                    ClientTypeName = "Essentials Clients",
                     TypeCountAsOfDate = 3000,
 
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-03-13",
-                    TypeName = "FlexTime Clients",
+                    ClientTypeName = "FlexTime Clients",
                     TypeCountAsOfDate = 32000,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-03-13",
-                    TypeName = "Nettime Organic Clients",
+                    ClientTypeName = "Nettime Organic Clients",
                     TypeCountAsOfDate = 100,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-03-13",
-                    TypeName = "Standalone",
+                    ClientTypeName = "Standalone",
                     TypeCountAsOfDate = 2000,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-03-13",
-                    TypeName = "C2C All Clients",
+                    ClientTypeName = "C2C All Clients",
                     TypeCountAsOfDate = 200,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-03-13",
-                    TypeName = "StratusTime Integrated Clients",
+                    ClientTypeName = "StratusTime Integrated Clients",
                     TypeCountAsOfDate = 8000,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-03-13",
-                    TypeName = "C2C CLients with same FEIN",
+                    ClientTypeName = "C2C CLients with same FEIN",
                     TypeCountAsOfDate = 40000,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-03-13",
-                    TypeName = "C2C CLients with different FEIN",
+                    ClientTypeName = "C2C CLients with different FEIN",
                     TypeCountAsOfDate = 330,
                 },
             };
@@ -219,13 +219,13 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
             using (var mock = AutoMock.GetLoose())
             {
                 mock.Mock<IDapperManager>()
-                    .Setup(x => x.GetAll<CPTType>($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Type].TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
+                    .Setup(x => x.GetAll<CPTType>($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientType].ClientTypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
                 $"from [dbo].[ClientsPerType] " +
-                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
                 $"WHERE  " +
                 $"[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
                 $"AND[dbo].[ClientsPerType].DateOfReport <= '2021-04-03' " +
-                $"AND [dbo].[Type].TypeName = 'Standalone' " +
+                $"AND [dbo].[ClientType].ClientTypeName = 'Standalone' " +
                 $"ORDER BY[dbo].[ClientsPerType].DateOfReport", null, CommandType.Text))
                     .Returns(GetSampleGetTypeReportData());
 
@@ -240,7 +240,7 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 {
                     Xunit.Assert.Equal(expected[i].DateOfReport, actual[i].DateOfReport);
                     Xunit.Assert.Equal(expected[i].TypeCountAsOfDate, actual[i].TypeCountAsOfDate);
-                    Xunit.Assert.Equal(expected[i].TypeName, actual[i].TypeName);
+                    Xunit.Assert.Equal(expected[i].ClientTypeName, actual[i].ClientTypeName);
                 }
             }
         }
@@ -251,26 +251,26 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 new CPTType
                 {
                     DateOfReport = "2021-03-13",
-                    TypeName = "Standalone",
+                    ClientTypeName = "Standalone",
                     TypeCountAsOfDate = 20000,
 
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-03-20",
-                    TypeName = "Standalone",
+                    ClientTypeName = "Standalone",
                     TypeCountAsOfDate = 20001,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-03-27",
-                    TypeName = "Standalone",
+                    ClientTypeName = "Standalone",
                     TypeCountAsOfDate = 20002,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-04-03",
-                    TypeName = "Standalone",
+                    ClientTypeName = "Standalone",
                     TypeCountAsOfDate = 20003,
                 },
             };
@@ -290,7 +290,7 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 mock.Mock<IDapperManager>()
                     .Setup(x => x.Get<int>($"select COUNT(*) " +
                 $"from [dbo].[ClientsPerType] " +
-                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
                 $"WHERE " +
                 $"[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
                 $"AND [dbo].[ClientsPerType].DateOfReport <= '2021-04-03';", null, CommandType.Text))
@@ -342,7 +342,7 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 {
                     ClientsPerTypeId = 0,
                     DateOfReport = "2021-04-03",
-                    TypeId = 0,
+                    ClientTypeId = 0,
                     TypeCountAsOfDate = 0,
                 },
             };
@@ -353,22 +353,22 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
         // Get Most Recent Status Counts Valid Call
         //
         [Fact]
-        public async void getMostRecentStatusCounts_ValidCall()
+        public async void getMostRecentTypeCounts_ValidCall()
         {
             using (var mock = AutoMock.GetLoose())
             {
                 mock.Mock<IDapperManager>()
-                    .Setup(x => x.GetAll<CPTType>($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Type].TypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
+                    .Setup(x => x.GetAll<CPTType>($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientType].ClientTypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
                 $"FROM [dbo].[ClientsPerType] " +
-                $"INNER JOIN [dbo].[Type] ON [dbo].[Type].TypeId = [dbo].[ClientsPerType].TypeId " +
+                $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
                 $"WHERE DateOfReport = '2021-04-03' " +
-                $"ORDER BY [dbo].[Type].TypeId", null, CommandType.Text))
+                $"ORDER BY [dbo].[ClientType].ClientTypeId", null, CommandType.Text))
                     .Returns(GetSampleGetMostRecentStatusCounts());
 
                 var cls = mock.Create<CPTManager>();
                 var expected = GetSampleGetMostRecentStatusCounts();
 
-                var actual = await cls.getMostRecentStatusCounts("2021-04-03");
+                var actual = await cls.getMostRecentTypeCounts("2021-04-03");
 
                 Xunit.Assert.True(actual != null);
                 Xunit.Assert.Equal(expected.Count, actual.Count);
@@ -376,7 +376,7 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 {
                     Xunit.Assert.Equal(expected[i].DateOfReport, actual[i].DateOfReport);
                     Xunit.Assert.Equal(expected[i].TypeCountAsOfDate, actual[i].TypeCountAsOfDate);
-                    Xunit.Assert.Equal(expected[i].TypeName, actual[i].TypeName);
+                    Xunit.Assert.Equal(expected[i].ClientTypeName, actual[i].ClientTypeName);
                 }
             }
         }
@@ -387,50 +387,50 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 new CPTType
                 {
                     DateOfReport = "2021-04-03",
-                    TypeName = "Standalone",
+                    ClientTypeName = "Standalone",
                     TypeCountAsOfDate = 2000,
 
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-04-03",
-                    TypeName = "Nettime Organic",
+                    ClientTypeName = "Nettime Organic",
                     TypeCountAsOfDate = 20001,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-04-03",
-                    TypeName = "FlexTime",
+                    ClientTypeName = "FlexTime",
                     TypeCountAsOfDate = 200,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-04-03",
-                    TypeName = "Essentials",
+                    ClientTypeName = "Essentials",
                     TypeCountAsOfDate = 100,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-04-03",
-                    TypeName = "C2C All",
+                    ClientTypeName = "C2C All",
                     TypeCountAsOfDate = 300,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-04-03",
-                    TypeName = "StratusTime Integrated",
+                    ClientTypeName = "StratusTime Integrated",
                     TypeCountAsOfDate = 500,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-04-03",
-                    TypeName = "C2C Clients with same FEIN",
+                    ClientTypeName = "C2C Clients with same FEIN",
                     TypeCountAsOfDate = 40000,
                 },
                 new CPTType
                 {
                     DateOfReport = "2021-04-03",
-                    TypeName = "C2C Clients with different FEIN",
+                    ClientTypeName = "C2C Clients with different FEIN",
                     TypeCountAsOfDate = 100,
                 },
             };

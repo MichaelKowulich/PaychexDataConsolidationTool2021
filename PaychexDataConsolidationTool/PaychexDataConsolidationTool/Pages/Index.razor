@@ -113,7 +113,7 @@
                         foreach (var cptt in MostRecentCPTData)
                         {
                             <tr>
-                                <td> @cptt.TypeName</td>
+                                <td> @cptt.ClientTypeName</td>
                                 <td> @cptt.TypeCountAsOfDate</td>
                             </tr>
                         }
@@ -191,7 +191,7 @@
         //Clients Per Type
         MostRecentCPTDate = await cptManager.getMostRecentDate();
         mostRecentCPTDate = MostRecentCPTDate.ElementAt(0).DateOfReport;
-        MostRecentCPTData = await cptManager.getMostRecentStatusCounts(mostRecentCPTDate);
+        MostRecentCPTData = await cptManager.getMostRecentTypeCounts(mostRecentCPTDate);
 
         //Users Per Type
         MostRecentUPTDate = await uptManager.getMostRecentDate();
@@ -263,7 +263,7 @@
         foreach (var cpt in MostRecentCPTData)
         {
             Array.Resize(ref types, types.Length + 1);
-            types[types.GetUpperBound(0)] = cpt.TypeName.ToString();
+            types[types.GetUpperBound(0)] = cpt.ClientTypeName.ToString();
             Array.Resize(ref typeData, typeData.Length + 1);
             typeData[typeData.GetUpperBound(0)] = cpt.TypeCountAsOfDate;
         }

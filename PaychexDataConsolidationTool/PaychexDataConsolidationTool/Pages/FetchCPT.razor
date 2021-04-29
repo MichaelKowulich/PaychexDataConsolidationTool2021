@@ -59,9 +59,9 @@
                     Date Of Report
                     <span class="fa @(SetSortIcon("DateOfReport"))"></span>
                 </th>
-                <th class="sort-th" @onclick="@(() => SortTable("TypeName"))">
+                <th class="sort-th" @onclick="@(() => SortTable("ClientTypeName"))">
                     Type
-                    <span class="fa @(SetSortIcon("TypeName"))"></span>
+                    <span class="fa @(SetSortIcon("ClientTypeName"))"></span>
                 </th>
                 <th class="sort-th" @onclick="@(() => SortTable("TypeCountAsOfDate"))">
                     Total
@@ -84,7 +84,7 @@
                 {
                     <tr>
                         <td>@cptt.DateOfReport</td>
-                        <td>@cptt.TypeName</td>
+                        <td>@cptt.ClientTypeName</td>
                         <td>@cptt.TypeCountAsOfDate</td>
                     </tr>
                 }
@@ -216,12 +216,12 @@
         }
 
         //Getting our types and properly putting them in the array
-        List<PaychexDataConsolidationTool.Entities.Type> Types = await cptManager.getTypes();
+        List<PaychexDataConsolidationTool.Entities.ClientType> Types = await cptManager.getTypes();
         foreach (var type in Types)
         {
             Array.Resize(ref types, types.Length + 1);
-            types[types.GetUpperBound(0)] = type.TypeName.ToString();
-            Console.WriteLine(type.TypeName.ToString());
+            types[types.GetUpperBound(0)] = type.ClientTypeName.ToString();
+            Console.WriteLine(type.ClientTypeName.ToString());
         }
 
         //Create our graphdata object because now we know what amount of data we are working with

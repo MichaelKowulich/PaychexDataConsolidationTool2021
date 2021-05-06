@@ -25,12 +25,15 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns> Integer count of all records retrieved </returns>
         public Task<int> Count(string startDate, string endDate)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
             var totCPTS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) " +
                 $"from [dbo].[ClientsPerType] " +
                 $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
-                $"AND [dbo].[ClientsPerType].DateOfReport <= '{endDate}';", null,
+                $"[dbo].[ClientsPerType].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerType].DateOfReport <= @endDate ;", dbArgs,
                     commandType: CommandType.Text));
             return totCPTS;
         }
@@ -47,14 +50,22 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of All CPT joined with ClientType to put into tabular view</returns>
         public Task<List<CPTType>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string direction = "DESC")
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
+            dbArgs.Add("orderBy", orderBy);
+            dbArgs.Add("direction", direction);
+            dbArgs.Add("skip", skip);
+            dbArgs.Add("take", take);
+
             var cptt = Task.FromResult(_dapperManager.GetAll<CPTType>
                 ($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientType].ClientTypeName as ClientTypeName, [dbo].[ClientsPerType].TypeCountAsOfDate as TypeCountAsOfDate " +
                 $"from [dbo].[ClientsPerType] " +
                 $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
-                $"AND [dbo].[ClientsPerType].DateOfReport <= '{endDate}' " +
-                $"ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;", null, commandType: CommandType.Text));
+                $"[dbo].[ClientsPerType].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerType].DateOfReport <= @endDate " +
+                $"ORDER BY {orderBy} {direction} OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY;", dbArgs, commandType: CommandType.Text));
             return cptt;
         }
 
@@ -66,9 +77,11 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns></returns>
         public Task<List<CPT>> getDates(string startDate, string endDate)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
             var cpts = Task.FromResult(_dapperManager.GetAll<CPT>
-                ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerType] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerType] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC");
+                ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerType] WHERE DateOfReport >= @startDate AND DateOfReport <= @endDate ORDER BY DateOfReport ASC", dbArgs, commandType: CommandType.Text));
             return cpts;
         }
 
@@ -92,15 +105,19 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of CPT joined with ClientType </returns>
         public Task<List<CPTType>> getTypeReportData(string startDate, string endDate, string typeName)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
+            dbArgs.Add("typeName", typeName);
             var cptt = Task.FromResult(_dapperManager.GetAll<CPTType>
                 ($"Select FORMAT ([dbo].[ClientsPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientType].ClientTypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
                 $"from [dbo].[ClientsPerType] " +
                 $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
                 $"WHERE  " +
-                $"[dbo].[ClientsPerType].DateOfReport >= '{startDate}' " +
-                $"AND[dbo].[ClientsPerType].DateOfReport <= '{endDate}' " +
-                $"AND [dbo].[ClientType].ClientTypeName = '{typeName}' " +
-                $"ORDER BY[dbo].[ClientsPerType].DateOfReport", null, commandType: CommandType.Text));
+                $"[dbo].[ClientsPerType].DateOfReport >= @startDate " +
+                $"AND[dbo].[ClientsPerType].DateOfReport <= @endDate " +
+                $"AND [dbo].[ClientType].ClientTypeName = @typeName " +
+                $"ORDER BY[dbo].[ClientsPerType].DateOfReport", dbArgs, commandType: CommandType.Text));
             return cptt;
         }
 
@@ -122,12 +139,14 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of CPT joined with ClientType objects</returns>
         public Task<List<CPTType>> getMostRecentTypeCounts(string date)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("date", date);
             var cpss = Task.FromResult(_dapperManager.GetAll<CPTType>
                 ($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientType].ClientTypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
                 $"FROM [dbo].[ClientsPerType] " +
                 $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
-                $"WHERE DateOfReport = '{date}' " +
-                $"ORDER BY [dbo].[ClientType].ClientTypeId", null, commandType: CommandType.Text));
+                $"WHERE DateOfReport = @date " +
+                $"ORDER BY [dbo].[ClientType].ClientTypeId", dbArgs, commandType: CommandType.Text));
             return cpss;
         }
     }

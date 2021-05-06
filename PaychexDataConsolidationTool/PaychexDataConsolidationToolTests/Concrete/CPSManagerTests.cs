@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Data;
 using System.Text;
 using Xunit;
+using Dapper;
 
 namespace PaychexDataConsolidationTool.Concrete.Tests
 {
@@ -22,10 +23,13 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
         [Fact]
         public async void getDates_ValidCall()
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", "2021-03-01");
+            dbArgs.Add("endDate", "2021-04-03");
             using (var mock = AutoMock.GetLoose())
             {
                 mock.Mock<IDapperManager>()
-                    .Setup(x => x.GetAll<CPS>("SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerStatus] WHERE DateOfReport >= '2021-03-01' AND DateOfReport <= '2021-04-03' ORDER BY DateOfReport ASC", null, CommandType.Text))
+                    .Setup(x => x.GetAll<CPS>("SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerStatus] WHERE DateOfReport >= @startDate AND DateOfReport <= @endDate ORDER BY DateOfReport ASC", dbArgs, CommandType.Text))
                     .Returns(GetSampleDates());
 
                 var cls = mock.Create<CPSManager>();
@@ -124,6 +128,11 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
         [Fact]
         public async void ListAll_ValidCall()
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", "2021-03-01");
+            dbArgs.Add("endDate", "2021-04-03");
+            dbArgs.Add("skip", 0);
+            dbArgs.Add("take", 7);
             using (var mock = AutoMock.GetLoose())
             {
                 mock.Mock<IDapperManager>()
@@ -131,9 +140,9 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 $"from[dbo].[ClientsPerStatus] " +
                 $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerStatus].DateOfReport >= '2021-03-01' " +
-                $"AND[dbo].[ClientsPerStatus].DateOfReport <= '2021-04-03' " +
-                $"ORDER BY DateOfReport ASC OFFSET 0 ROWS FETCH NEXT 7 ROWS ONLY;", null, CommandType.Text))
+                $"[dbo].[ClientsPerStatus].DateOfReport >= @startDate " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport <= @endDate " +
+                $"ORDER BY DateOfReport ASC OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY;", dbArgs, CommandType.Text))
                     .Returns(GetSampleListAll());
 
                 var cls = mock.Create<CPSManager>();
@@ -211,15 +220,19 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
         {
             using (var mock = AutoMock.GetLoose())
             {
+                var dbArgs = new DynamicParameters();
+                dbArgs.Add("startDate", "2021-03-01");
+                dbArgs.Add("endDate", "2021-04-03");
+                dbArgs.Add("statusName", "Active");
                 mock.Mock<IDapperManager>()
                     .Setup(x => x.GetAll<CPSStatus>($"Select FORMAT ([dbo].[ClientsPerStatus].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Status].StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate " +
                 $"from[dbo].[ClientsPerStatus] " +
                 $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerStatus].DateOfReport >= '2021-03-01' " +
-                $"AND[dbo].[ClientsPerStatus].DateOfReport <= '2021-04-03' " +
-                $"AND [dbo].[Status].StatusName = 'Active' " +
-                $"ORDER BY[dbo].[ClientsPerStatus].DateOfReport", null, CommandType.Text))
+                $"[dbo].[ClientsPerStatus].DateOfReport >= @startDate " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport <= @endDate " +
+                $"AND [dbo].[Status].StatusName = @statusName " +
+                $"ORDER BY[dbo].[ClientsPerStatus].DateOfReport", dbArgs, CommandType.Text))
                     .Returns(GetSampleGetStatusReportData());
 
                 var cls = mock.Create<CPSManager>();
@@ -278,29 +291,31 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
         [Fact]
         public async void Count_ValidCall()
         {
-            using (var mock = AutoMock.GetLoose())
-            {
-                mock.Mock<IDapperManager>()
-                    .Setup(x => x.Get<int>($"select COUNT(*) " +
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", "2021-03-01");
+            dbArgs.Add("endDate", "2021-04-03");
+
+            string query = $"select COUNT(*) " +
                 $"from [dbo].[ClientsPerStatus] " +
                 $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerStatus].DateOfReport >= '2021-03-01' " +
-                $"AND [dbo].[ClientsPerStatus].DateOfReport <= '2021-04-03';", null, CommandType.Text))
-                    .Returns(GetSampleCount());
+                $"[dbo].[ClientsPerStatus].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerStatus].DateOfReport <= @endDate ;";
+
+            using (var mock = AutoMock.GetLoose())
+            {
+                mock.Mock<IDapperManager>()
+                    .Setup(x => x.Get<int>(query, dbArgs, CommandType.Text))
+                    .Returns(28);
 
                 var cls = mock.Create<CPSManager>();
-                var expected = GetSampleCount();
+                var expected = 28;
 
                 var actual = await cls.Count("2021-03-01", "2021-04-03");
 
-                Xunit.Assert.Equal(actual, expected);
+                Xunit.Assert.Equal(expected, actual);
                 
             }
-        }
-        private int GetSampleCount()
-        {
-            return 28;
         }
 
         //
@@ -347,14 +362,16 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
         [Fact]
         public async void getMostRecentStatusCounts_ValidCall()
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("date", "2021-04-03");
             using (var mock = AutoMock.GetLoose())
             {
                 mock.Mock<IDapperManager>()
                     .Setup(x => x.GetAll<CPSStatus>($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Status].StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate " +
                 $"FROM [dbo].[ClientsPerStatus] " +
                 $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
-                $"WHERE DateOfReport = '2021-04-03' " +
-                $"ORDER BY [dbo].[Status].StatusId", null, CommandType.Text))
+                $"WHERE DateOfReport = @date " +
+                $"ORDER BY [dbo].[Status].StatusId", dbArgs, CommandType.Text))
                     .Returns(GetSampleGetMostRecentStatusCounts());
 
                 var cls = mock.Create<CPSManager>();

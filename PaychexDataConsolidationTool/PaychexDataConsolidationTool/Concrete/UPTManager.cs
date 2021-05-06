@@ -25,12 +25,15 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns> Integer count of all records retrieved </returns>
         public Task<int> Count(string startDate, string endDate)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
             var totUPTS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) " +
                 $"from [dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeId " +
                 $"WHERE " +
-                $"[dbo].[UsersPerType].DateOfReport >= '{startDate}' " +
-                $"AND [dbo].[UsersPerType].DateOfReport <= '{endDate}';", null,
+                $"[dbo].[UsersPerType].DateOfReport >= @startDate " +
+                $"AND [dbo].[UsersPerType].DateOfReport <= @endDate ;", dbArgs,
                     commandType: CommandType.Text));
             return totUPTS;
         }
@@ -47,14 +50,22 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of All UPT joined with UserType to put into tabular view</returns>
         public Task<List<UPTType>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string direction = "DESC")
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
+            dbArgs.Add("orderBy", orderBy);
+            dbArgs.Add("direction", direction);
+            dbArgs.Add("skip", skip);
+            dbArgs.Add("take", take);
+
             var uptt = Task.FromResult(_dapperManager.GetAll<UPTType>
                 ($"Select FORMAT ([dbo].[UsersPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName as UserTypeName, [dbo].[UsersPerType].UserTypeCountAsOfDate as UserTypeCountAsOfDate " +
                 $"from [dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeId " +
                 $"WHERE " +
-                $"[dbo].[UsersPerType].DateOfReport >= '{startDate}' " +
-                $"AND [dbo].[UsersPerType].DateOfReport <= '{endDate}' " +
-                $"ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;", null, commandType: CommandType.Text));
+                $"[dbo].[UsersPerType].DateOfReport >= @startDate " +
+                $"AND [dbo].[UsersPerType].DateOfReport <= @endDate " +
+                $"ORDER BY {orderBy} {direction} OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY;", dbArgs, commandType: CommandType.Text));
             return uptt;
         }
 
@@ -66,9 +77,11 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns></returns>
         public Task<List<UPT>> getDates(string startDate, string endDate)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
             var upts = Task.FromResult(_dapperManager.GetAll<UPT>
-                ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[UsersPerType] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[UsersPerType] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC");
+                ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[UsersPerType] WHERE DateOfReport >= @startDate AND DateOfReport <= @endDate ORDER BY DateOfReport ASC", dbArgs, commandType: CommandType.Text));
             return upts;
         }
 
@@ -92,15 +105,19 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of UPT joined with UserType </returns>
         public Task<List<UPTType>> getTypeReportData(string startDate, string endDate, string typeName)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
+            dbArgs.Add("typeName", typeName);
             var uptt = Task.FromResult(_dapperManager.GetAll<UPTType>
                 ($"Select FORMAT ([dbo].[UsersPerType].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName, [dbo].[UsersPerType].UserTypeCountAsOfDate " +
                 $"from [dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeId " +
                 $"WHERE  " +
-                $"[dbo].[UsersPerType].DateOfReport >= '{startDate}' " +
-                $"AND[dbo].[UsersPerType].DateOfReport <= '{endDate}' " +
-                $"AND [dbo].[UserType].UserTypeName = '{typeName}' " +
-                $"ORDER BY[dbo].[UsersPerType].DateOfReport", null, commandType: CommandType.Text));
+                $"[dbo].[UsersPerType].DateOfReport >= @startDate " +
+                $"AND[dbo].[UsersPerType].DateOfReport <= @endDate " +
+                $"AND [dbo].[UserType].UserTypeName = @typeName " +
+                $"ORDER BY[dbo].[UsersPerType].DateOfReport", dbArgs, commandType: CommandType.Text));
             return uptt;
         }
 
@@ -122,12 +139,14 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of UPT joined with UserType objects</returns>
         public Task<List<UPTType>> getMostRecentTypeCounts(string date)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("date", date);
             var uptt = Task.FromResult(_dapperManager.GetAll<UPTType>
                 ($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName, [dbo].[UsersPerType].UserTypeCountAsOfDate " +
                 $"FROM [dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeId " +
-                $"WHERE DateOfReport = '{date}' " +
-                $"ORDER BY [dbo].[UserType].UserTypeId", null, commandType: CommandType.Text));
+                $"WHERE DateOfReport = @date " +
+                $"ORDER BY [dbo].[UserType].UserTypeId", dbArgs, commandType: CommandType.Text));
             return uptt;
         }
     }

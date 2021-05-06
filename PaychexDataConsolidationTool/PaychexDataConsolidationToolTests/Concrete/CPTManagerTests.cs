@@ -10,6 +10,8 @@ using System.Text;
 using Newtonsoft.Json;
 using Xunit;
 using Type = PaychexDataConsolidationTool.Entities.ClientType;
+using Moq;
+using Dapper;
 
 namespace PaychexDataConsolidationTool.Concrete.Tests
 {
@@ -26,7 +28,7 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
             using (var mock = AutoMock.GetLoose())
             {
                 mock.Mock<IDapperManager>()
-                    .Setup(x => x.GetAll<CPT>($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerType] WHERE DateOfReport >= '2021-03-01' AND DateOfReport <= '2021-04-03' ORDER BY DateOfReport ASC", null, CommandType.Text))
+                    .Setup(x => x.GetAll<CPT>($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerType] WHERE DateOfReport >= @startDate AND DateOfReport <= @endDate ORDER BY DateOfReport ASC", It.IsAny<DynamicParameters>(), CommandType.Text))
                     .Returns(GetSampleDates());
 
                 var cls = mock.Create<CPTManager>();
@@ -132,9 +134,9 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 $"from [dbo].[ClientsPerType] " +
                 $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
-                $"AND [dbo].[ClientsPerType].DateOfReport <= '2021-04-03' " +
-                $"ORDER BY DateOfReport ASC OFFSET 0 ROWS FETCH NEXT 8 ROWS ONLY;", null, CommandType.Text))
+                $"[dbo].[ClientsPerType].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerType].DateOfReport <= @endDate " +
+                $"ORDER BY DateOfReport ASC OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY;", It.IsAny<DynamicParameters>(), CommandType.Text))
                     .Returns(GetSampleListAll());
 
                 var cls = mock.Create<CPTManager>();
@@ -223,10 +225,10 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 $"from [dbo].[ClientsPerType] " +
                 $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
                 $"WHERE  " +
-                $"[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
-                $"AND[dbo].[ClientsPerType].DateOfReport <= '2021-04-03' " +
-                $"AND [dbo].[ClientType].ClientTypeName = 'Standalone' " +
-                $"ORDER BY[dbo].[ClientsPerType].DateOfReport", null, CommandType.Text))
+                $"[dbo].[ClientsPerType].DateOfReport >= @startDate " +
+                $"AND[dbo].[ClientsPerType].DateOfReport <= @endDate " +
+                $"AND [dbo].[ClientType].ClientTypeName = @typeName " +
+                $"ORDER BY[dbo].[ClientsPerType].DateOfReport", It.IsAny<DynamicParameters>(), CommandType.Text))
                     .Returns(GetSampleGetTypeReportData());
 
                 var cls = mock.Create<CPTManager>();
@@ -292,8 +294,9 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 $"from [dbo].[ClientsPerType] " +
                 $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerType].DateOfReport >= '2021-03-01' " +
-                $"AND [dbo].[ClientsPerType].DateOfReport <= '2021-04-03';", null, CommandType.Text))
+                $"[dbo].[ClientsPerType].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerType].DateOfReport <= @endDate ;", It.IsAny<DynamicParameters>(),
+                    CommandType.Text))
                     .Returns(GetSampleCount());
 
                 var cls = mock.Create<CPTManager>();
@@ -361,8 +364,8 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                     .Setup(x => x.GetAll<CPTType>($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientType].ClientTypeName, [dbo].[ClientsPerType].TypeCountAsOfDate " +
                 $"FROM [dbo].[ClientsPerType] " +
                 $"INNER JOIN [dbo].[ClientType] ON [dbo].[ClientType].ClientTypeId = [dbo].[ClientsPerType].ClientTypeId " +
-                $"WHERE DateOfReport = '2021-04-03' " +
-                $"ORDER BY [dbo].[ClientType].ClientTypeId", null, CommandType.Text))
+                $"WHERE DateOfReport = @date " +
+                $"ORDER BY [dbo].[ClientType].ClientTypeId", It.IsAny<DynamicParameters>(), CommandType.Text))
                     .Returns(GetSampleGetMostRecentStatusCounts());
 
                 var cls = mock.Create<CPTManager>();

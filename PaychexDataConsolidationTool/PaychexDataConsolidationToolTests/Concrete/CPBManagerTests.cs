@@ -10,6 +10,8 @@ using System.Text;
 using Newtonsoft.Json;
 using Xunit;
 using ClientBrand = PaychexDataConsolidationTool.Entities.ClientBrand;
+using Moq;
+using Dapper;
 
 namespace PaychexDataConsolidationTool.Concrete.Tests
 {
@@ -26,7 +28,8 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
             using (var mock = AutoMock.GetLoose())
             {
                 mock.Mock<IDapperManager>()
-                    .Setup(x => x.GetAll<CPB>($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerBrand] WHERE DateOfReport >= '2021-03-01' AND DateOfReport <= '2021-04-03' ORDER BY DateOfReport ASC", null, CommandType.Text))
+                    .Setup(x => x.GetAll<CPB>($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerBrand] WHERE DateOfReport >= @startDate AND DateOfReport <= @endDate ORDER BY DateOfReport ASC", 
+                    It.IsAny<DynamicParameters>(), CommandType.Text))
                     .Returns(GetSampleDates());
 
                 var cls = mock.Create<CPBManager>();
@@ -180,10 +183,10 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +
                 $"INNER JOIN [dbo].[ClientsPerBrandCountType] ON [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeId = [dbo].[ClientsPerBrand].ClientsPerBrandCountTypeId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerBrand].DateOfReport >= '2021-03-01' " +
-                $"AND [dbo].[ClientsPerBrand].DateOfReport <= '2021-04-03' " +
-                $"AND [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName = 'Active Client Count' " +
-                $"ORDER BY DateOfReport ASC OFFSET 0 ROWS FETCH NEXT 8 ROWS ONLY;", null, CommandType.Text))
+                $"[dbo].[ClientsPerBrand].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerBrand].DateOfReport <= @endDate " +
+                $"AND [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName = @countTypeName " +
+                $"ORDER BY DateOfReport ASC OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY;", It.IsAny<DynamicParameters>(), CommandType.Text))
                     .Returns(GetSampleListAll());
 
                 var cls = mock.Create<CPBManager>();
@@ -257,17 +260,17 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
             using (var mock = AutoMock.GetLoose())
             {
                 mock.Mock<IDapperManager>()
-                    .Setup(x => x.GetAll<CPBCountTypeBrand>($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName, " + 
+                    .Setup(x => x.GetAll<CPBCountTypeBrand>($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName, " +
                 $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate " +
                 $"FROM [dbo].[ClientsPerBrand] " +
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +
                 $"INNER JOIN [dbo].[ClientsPerBrandCountType] ON [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeId = [dbo].[ClientsPerBrand].ClientsPerBrandCountTypeId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerBrand].DateOfReport >= '2021-03-01' " +
-                $"AND [dbo].[ClientsPerBrand].DateOfReport <= '2021-04-03' " +
-                $"AND [dbo].[ClientBrand].ClientBrandName = 'Paychex' " +
-                $"AND [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName = 'Active Client Count' " +
-                $"ORDER BY[dbo].[ClientsPerBrand].DateOfReport", null, CommandType.Text))
+                $"[dbo].[ClientsPerBrand].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerBrand].DateOfReport <= @endDate " +
+                $"AND [dbo].[ClientBrand].ClientBrandName = @brandName " +
+                $"AND [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName = @countTypeName " +
+                $"ORDER BY[dbo].[ClientsPerBrand].DateOfReport", It.IsAny<DynamicParameters>(), CommandType.Text))
                     .Returns(GetSampleGetClientBrandReportData());
 
                 var cls = mock.Create<CPBManager>();
@@ -335,8 +338,9 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 $"from [dbo].[ClientsPerBrand] " +
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerBrand].DateOfReport >= '2021-03-01' " +
-                $"AND [dbo].[ClientsPerBrand].DateOfReport <= '2021-04-03';", null, CommandType.Text))
+                $"[dbo].[ClientsPerBrand].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerBrand].DateOfReport <= @endDate ;", It.IsAny<DynamicParameters>(),
+                    CommandType.Text))
                     .Returns(GetSampleCount());
 
                 var cls = mock.Create<CPBManager>();
@@ -406,8 +410,8 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 $"FROM [dbo].[ClientsPerBrand] " +
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +
                 $"INNER JOIN [dbo].[ClientsPerBrandCountType] ON [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeId = [dbo].[ClientsPerBrand].ClientsPerBrandCountTypeId " +
-                $"WHERE DateOfReport = '2021-04-03' " +
-                $"ORDER BY [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName,[dbo].[ClientBrand].ClientBrandId ASC", null, CommandType.Text))
+                $"WHERE DateOfReport = @date " +
+                $"ORDER BY [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName,[dbo].[ClientBrand].ClientBrandId ASC", It.IsAny<DynamicParameters>(), CommandType.Text))
                     .Returns(GetSampleGetMostRecentStatusCounts());
 
                 var cls = mock.Create<CPBManager>();

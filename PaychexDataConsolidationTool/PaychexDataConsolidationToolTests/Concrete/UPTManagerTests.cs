@@ -10,6 +10,8 @@ using System.Text;
 using Newtonsoft.Json;
 using Xunit;
 using UserType = PaychexDataConsolidationTool.Entities.UserType;
+using Moq;
+using Dapper;
 
 namespace PaychexDataConsolidationTool.Concrete.Tests
 {
@@ -26,7 +28,7 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
             using (var mock = AutoMock.GetLoose())
             {
                 mock.Mock<IDapperManager>()
-                    .Setup(x => x.GetAll<UPT>($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[UsersPerType] WHERE DateOfReport >= '2021-03-01' AND DateOfReport <= '2021-04-03' ORDER BY DateOfReport ASC", null, CommandType.Text))
+                    .Setup(x => x.GetAll<UPT>($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[UsersPerType] WHERE DateOfReport >= @startDate AND DateOfReport <= @endDate ORDER BY DateOfReport ASC", It.IsAny<DynamicParameters>(), CommandType.Text))
                     .Returns(GetSampleDates());
 
                 var cls = mock.Create<UPTManager>();
@@ -124,9 +126,9 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 $"from [dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeId " +
                 $"WHERE " +
-                $"[dbo].[UsersPerType].DateOfReport >= '2021-03-01' " +
-                $"AND [dbo].[UsersPerType].DateOfReport <= '2021-04-03' " +
-                $"ORDER BY DateOfReport ASC OFFSET 0 ROWS FETCH NEXT 8 ROWS ONLY;", null, CommandType.Text))
+                $"[dbo].[UsersPerType].DateOfReport >= @startDate " +
+                $"AND [dbo].[UsersPerType].DateOfReport <= @endDate " +
+                $"ORDER BY DateOfReport ASC OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY;", It.IsAny<DynamicParameters>(),CommandType.Text))
                     .Returns(GetSampleListAll());
 
                 var cls = mock.Create<UPTManager>();
@@ -203,10 +205,10 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 $"from [dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeId " +
                 $"WHERE  " +
-                $"[dbo].[UsersPerType].DateOfReport >= '2021-03-01' " +
-                $"AND[dbo].[UsersPerType].DateOfReport <= '2021-04-03' " +
-                $"AND [dbo].[UserType].UserTypeName = 'Flex' " +
-                $"ORDER BY[dbo].[UsersPerType].DateOfReport", null, CommandType.Text))
+                $"[dbo].[UsersPerType].DateOfReport >= @startDate " +
+                $"AND[dbo].[UsersPerType].DateOfReport <= @endDate " +
+                $"AND [dbo].[UserType].UserTypeName = @typeName " +
+                $"ORDER BY[dbo].[UsersPerType].DateOfReport", It.IsAny<DynamicParameters>(), CommandType.Text))
                     .Returns(GetSampleGetTypeReportData());
 
                 var cls = mock.Create<UPTManager>();
@@ -272,8 +274,9 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                 $"from [dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeId " +
                 $"WHERE " +
-                $"[dbo].[UsersPerType].DateOfReport >= '2021-03-01' " +
-                $"AND [dbo].[UsersPerType].DateOfReport <= '2021-04-03';", null, CommandType.Text))
+                $"[dbo].[UsersPerType].DateOfReport >= @startDate " +
+                $"AND [dbo].[UsersPerType].DateOfReport <= @endDate ;", It.IsAny<DynamicParameters>(),
+                    CommandType.Text))
                     .Returns(GetSampleCount());
 
                 var cls = mock.Create<UPTManager>();
@@ -341,8 +344,8 @@ namespace PaychexDataConsolidationTool.Concrete.Tests
                     .Setup(x => x.GetAll<UPTType>($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[UserType].UserTypeName, [dbo].[UsersPerType].UserTypeCountAsOfDate " +
                 $"FROM [dbo].[UsersPerType] " +
                 $"INNER JOIN [dbo].[UserType] ON [dbo].[UserType].UserTypeId = [dbo].[UsersPerType].UserTypeId " +
-                $"WHERE DateOfReport = '2021-04-03' " +
-                $"ORDER BY [dbo].[UserType].UserTypeId", null, CommandType.Text))
+                $"WHERE DateOfReport = @date " +
+                $"ORDER BY [dbo].[UserType].UserTypeId", It.IsAny<DynamicParameters>(), CommandType.Text))
                     .Returns(GetSampleGetMostRecentTypeCounts());
 
                 var cls = mock.Create<UPTManager>();

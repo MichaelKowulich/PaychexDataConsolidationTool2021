@@ -25,12 +25,15 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns> Integer count of all records retrieved </returns>
         public Task<int> Count(string startDate, string endDate)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
             var totCPBB = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) " +
                 $"from [dbo].[ClientsPerBrand] " +
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerBrand].DateOfReport >= '{startDate}' " +
-                $"AND [dbo].[ClientsPerBrand].DateOfReport <= '{endDate}';", null,
+                $"[dbo].[ClientsPerBrand].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerBrand].DateOfReport <= @endDate ;", dbArgs,
                     commandType: CommandType.Text));
             return totCPBB;
         }
@@ -48,6 +51,14 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of All CPB joined with CountType/Brand to put into tabular view</returns>
         public Task<List<CPBCountTypeBrand>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string countTypeName, string direction = "DESC")
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
+            dbArgs.Add("orderBy", orderBy);
+            dbArgs.Add("countTypeName", countTypeName);
+            dbArgs.Add("direction", direction);
+            dbArgs.Add("skip", skip);
+            dbArgs.Add("take", take);
             var cpbb = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>
                 ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName, " +
                 $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate as CountAsOfDate " +
@@ -55,10 +66,10 @@ namespace PaychexDataConsolidationTool.Concrete
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +
                 $"INNER JOIN [dbo].[ClientsPerBrandCountType] ON [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeId = [dbo].[ClientsPerBrand].ClientsPerBrandCountTypeId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerBrand].DateOfReport >= '{startDate}' " +
-                $"AND [dbo].[ClientsPerBrand].DateOfReport <= '{endDate}' " +
-                $"AND [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName = '{countTypeName}' " +
-                $"ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;", null, commandType: CommandType.Text));
+                $"[dbo].[ClientsPerBrand].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerBrand].DateOfReport <= @endDate " +
+                $"AND [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName = @countTypeName " +
+                $"ORDER BY {orderBy} {direction} OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY;", dbArgs, commandType: CommandType.Text));
             return cpbb;
         }
 
@@ -70,9 +81,11 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns></returns>
         public Task<List<CPB>> getDates(string startDate, string endDate)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
             var cpbb = Task.FromResult(_dapperManager.GetAll<CPB>
-                ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerBrand] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC", null, commandType: CommandType.Text));
-            Console.WriteLine($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerBrand] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC");
+                ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerBrand] WHERE DateOfReport >= @startDate AND DateOfReport <= @endDate ORDER BY DateOfReport ASC", dbArgs, commandType: CommandType.Text));
             return cpbb;
         }
 
@@ -108,6 +121,11 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of CPB joined with CountType/Brand</returns>
         public Task<List<CPBCountTypeBrand>> getBrandReportData(string startDate, string endDate, string brandName, string countTypeName)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
+            dbArgs.Add("brandName", brandName);
+            dbArgs.Add("countTypeName", countTypeName);
             var cpbb = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>
                 ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName, " + 
                 $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate " +
@@ -115,11 +133,11 @@ namespace PaychexDataConsolidationTool.Concrete
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +
                 $"INNER JOIN [dbo].[ClientsPerBrandCountType] ON [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeId = [dbo].[ClientsPerBrand].ClientsPerBrandCountTypeId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerBrand].DateOfReport >= '{startDate}' " +
-                $"AND [dbo].[ClientsPerBrand].DateOfReport <= '{endDate}' " +
-                $"AND [dbo].[ClientBrand].ClientBrandName = '{brandName}' " +
-                $"AND [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName = '{countTypeName}' " +
-                $"ORDER BY[dbo].[ClientsPerBrand].DateOfReport", null, commandType: CommandType.Text));
+                $"[dbo].[ClientsPerBrand].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerBrand].DateOfReport <= @endDate " +
+                $"AND [dbo].[ClientBrand].ClientBrandName = @brandName " +
+                $"AND [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName = @countTypeName " +
+                $"ORDER BY[dbo].[ClientsPerBrand].DateOfReport", dbArgs, commandType: CommandType.Text));
             return cpbb;
         }
         /// <summary>
@@ -140,14 +158,16 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of CPB joined with CountType/Brand objects</returns>
         public Task<List<CPBCountTypeBrand>> getMostRecentBrandCountsOfType(string date)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("date", date);
             var cpss = Task.FromResult(_dapperManager.GetAll<CPBCountTypeBrand>
                 ($"Select FORMAT ([dbo].[ClientsPerBrand].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[ClientBrand].ClientBrandName, " + "" +
                 $"[dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName, [dbo].[ClientsPerBrand].CountAsOfDate " +
                 $"FROM [dbo].[ClientsPerBrand] " +
                 $"INNER JOIN [dbo].[ClientBrand] ON [dbo].[ClientBrand].ClientBrandId = [dbo].[ClientsPerBrand].ClientBrandId " +
                 $"INNER JOIN [dbo].[ClientsPerBrandCountType] ON [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeId = [dbo].[ClientsPerBrand].ClientsPerBrandCountTypeId " +
-                $"WHERE DateOfReport = '{date}' " +
-                $"ORDER BY [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName,[dbo].[ClientBrand].ClientBrandId ASC", null, commandType: CommandType.Text));
+                $"WHERE DateOfReport = @date " +
+                $"ORDER BY [dbo].[ClientsPerBrandCountType].ClientsPerBrandCountTypeName,[dbo].[ClientBrand].ClientBrandId ASC", dbArgs, commandType: CommandType.Text));
             return cpss;
         }
 

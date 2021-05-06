@@ -25,12 +25,17 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns> Integer count of all records retrieved </returns>
         public Task<int> Count(string startDate, string endDate)
         {
-            var totCPSS = Task.FromResult(_dapperManager.Get<int>($"select COUNT(*) " +
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
+            string query = $"select COUNT(*) " +
                 $"from [dbo].[ClientsPerStatus] " +
                 $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
-                $"AND [dbo].[ClientsPerStatus].DateOfReport <= '{endDate}';", null,
+                $"[dbo].[ClientsPerStatus].DateOfReport >= @startDate " +
+                $"AND [dbo].[ClientsPerStatus].DateOfReport <= @endDate ;";
+            Console.WriteLine(query);
+            var totCPSS = Task.FromResult(_dapperManager.Get<int>(query, dbArgs,
                     commandType: CommandType.Text));
             return totCPSS;
         }
@@ -47,14 +52,22 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of All CPS joined with Status to put into tabular view</returns>
         public Task<List<CPSStatus>> ListAll(int skip, int take, string orderBy, string startDate, string endDate, string direction = "DESC")
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
+            dbArgs.Add("orderBy", orderBy);
+            dbArgs.Add("direction", direction);
+            dbArgs.Add("skip", skip);
+            dbArgs.Add("take", take);
+            
             var cpss = Task.FromResult(_dapperManager.GetAll<CPSStatus>
                 ($"Select FORMAT ([dbo].[ClientsPerStatus].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Status].StatusName as StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate as StatusCountAsOfDate " +
                 $"from[dbo].[ClientsPerStatus] " +
                 $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
-                $"AND[dbo].[ClientsPerStatus].DateOfReport <= '{endDate}' " +
-                $"ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY;", null, commandType: CommandType.Text));
+                $"[dbo].[ClientsPerStatus].DateOfReport >= @startDate " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport <= @endDate " +
+                $"ORDER BY {orderBy} {direction} OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY;", dbArgs, commandType: CommandType.Text));
             return cpss;
         }
 
@@ -66,8 +79,11 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns></returns>
         public Task<List<CPS>> getDates(string startDate, string endDate)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
             var cpss = Task.FromResult(_dapperManager.GetAll<CPS>
-                ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerStatus] WHERE DateOfReport >= '{startDate}' AND DateOfReport <= '{endDate}' ORDER BY DateOfReport ASC", null, commandType: CommandType.Text));
+                ($"SELECT DISTINCT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport FROM [dbo].[ClientsPerStatus] WHERE DateOfReport >= @startDate AND DateOfReport <= @endDate ORDER BY DateOfReport ASC", dbArgs, commandType: CommandType.Text));
             return cpss;
         }
 
@@ -91,15 +107,19 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of CPS joined with Status</returns>
         public Task<List<CPSStatus>> getStatusReportData(string startDate, string endDate, string statusName)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("startDate", startDate);
+            dbArgs.Add("endDate", endDate);
+            dbArgs.Add("statusName", statusName);
             var cpss = Task.FromResult(_dapperManager.GetAll<CPSStatus>
                 ($"Select FORMAT ([dbo].[ClientsPerStatus].DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Status].StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate " +
                 $"from[dbo].[ClientsPerStatus] " +
                 $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
                 $"WHERE " +
-                $"[dbo].[ClientsPerStatus].DateOfReport >= '{startDate}' " +
-                $"AND[dbo].[ClientsPerStatus].DateOfReport <= '{endDate}' " +
-                $"AND [dbo].[Status].StatusName = '{statusName}' " +
-                $"ORDER BY[dbo].[ClientsPerStatus].DateOfReport", null, commandType: CommandType.Text));
+                $"[dbo].[ClientsPerStatus].DateOfReport >= @startDate " +
+                $"AND[dbo].[ClientsPerStatus].DateOfReport <= @endDate " +
+                $"AND [dbo].[Status].StatusName = @statusName " +
+                $"ORDER BY[dbo].[ClientsPerStatus].DateOfReport", dbArgs, commandType: CommandType.Text));
             return cpss;
         }
 
@@ -121,12 +141,14 @@ namespace PaychexDataConsolidationTool.Concrete
         /// <returns>List of CPS joined with Status objects</returns>
         public Task<List<CPSStatus>> getMostRecentStatusCounts(string date)
         {
+            var dbArgs = new DynamicParameters();
+            dbArgs.Add("date", date);
             var cpss = Task.FromResult(_dapperManager.GetAll<CPSStatus>
                 ($"SELECT FORMAT (DateOfReport, 'yyyy-MM-dd') as DateOfReport, [dbo].[Status].StatusName, [dbo].[ClientsPerStatus].StatusCountAsOfDate " +
                 $"FROM [dbo].[ClientsPerStatus] " +
                 $"INNER JOIN [dbo].[Status] ON [dbo].[Status].StatusId = [dbo].[ClientsPerStatus].StatusId " +
-                $"WHERE DateOfReport = '{date}' " +
-                $"ORDER BY [dbo].[Status].StatusId", null, commandType: CommandType.Text));
+                $"WHERE DateOfReport = @date " +
+                $"ORDER BY [dbo].[Status].StatusId", dbArgs, commandType: CommandType.Text));
             return cpss;
         }
 

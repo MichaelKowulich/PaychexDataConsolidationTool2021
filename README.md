@@ -21,14 +21,16 @@ The tool is flexible and can handle new kinds of Statuses, Types, and Brands to 
 ## Webpage Layout
 The home page shows the data from the most recent Flex data report. On the left the totals of each data type are represented in a donut chart and on the right they can be
 seen represented in a table. At the top of the chart are the color codings for each of the data types. Each data type entry can be clicked to show or hide that data type from the graph.
-[image _pending_]
+
+![alt text](https://github.com/MichaelKowulich/PaychexDataConsolidationTool2021/blob/master/Demo%20Images/HomePage.png)
 
 From the navigation menu on the left you can visit the respective pages for each data model. From each of theses pages you can select a start date and end date from the 
 date pickers and view data from all reports in the selected range. Up top you'll see a ChartJs linear graph showing the changing data counts over the range selected.
 This graph has the same functionality of showing and hiding certain data types as the main page has.Below the graph all the data entries from the range of reports will
 be shown in a table format. The page has sorting features for the different columns including the date,
 count, and other data classifiers which are unique to each data model. Just select the column name and it will sort the entries by that parameter.
-[images _pending_]
+
+![alt text](https://github.com/MichaelKowulich/PaychexDataConsolidationTool2021/blob/master/Demo%20Images/ClientsPerStatusPage.png)
 
 ## Building 
 After cloning (or downloading and unzipping), you'll need to add an appsettings.json file under PaychexDataConsolidationTool2021/PaychexDataConsolidationTool/PaychexDataConsolidationTool/.

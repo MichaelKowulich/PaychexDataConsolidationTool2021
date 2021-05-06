@@ -34,11 +34,16 @@
     .wrapper {
         height: 400px !important;
     }
+    @@media screen and (max-width: 500px) {
+        .float-child {
+            width: 100%;
+        }
+    }
 </style>
 <h1> ReFlex Data Consolidation Tool</h1>
 @foreach (var entity in Entities)
 {
-    <div class="float-container">
+    <div class="float-container dashboard-thingy">
         <h2 class="headers">
             @entity Overview (@switch (entity)
             {

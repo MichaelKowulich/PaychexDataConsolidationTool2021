@@ -51,7 +51,8 @@ You'll need to add the following code to the file and insert your connection str
 ```
 
 ## Setting Up The Database
-pending
+Run the DatabaseTablesSetup.sql script on your azure database to setup the tables needed for the application. Once the tables are setup
+you will just need to add your own data.
 
 ## Project Status
 Project is: _still in progress_

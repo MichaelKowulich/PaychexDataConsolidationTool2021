@@ -6,7 +6,9 @@ collaboration with Paychex.
 ## Technologies
 * .NET Core - version 3.1
 * bunit - version 1.0.19
-* NUnit - version 3.12.0
+* XUnit - version 2.4.1
+* MOQ - version 4.16.1
+* Dapper - version 2.0.30
 * ChartJs.Blazor.Fork - version 2.0.2
 
 ## Description of Flex Data
